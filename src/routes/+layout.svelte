@@ -1,11 +1,36 @@
 <script lang="ts">
-  // The ordering of these imports is critical to your app working properly
-  // import '@skeletonlabs/skeleton/themes/theme-gold-nouveau.css';
-  import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
-  // If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
+  // import order of css files matters!
+  // https://www.skeleton.dev/docs/get-started#stylesheets
+
+  import '../theme.postcss';
+
   import '@skeletonlabs/skeleton/styles/skeleton.css';
 
   import '../app.postcss';
+
+  import Name from '$lib/Name.svelte';
+  import { AppBar, AppShell, LightSwitch } from '@skeletonlabs/skeleton';
+  import Nav from '../lib/Nav.svelte';
 </script>
 
-<slot />
+<AppShell>
+  <svelte:fragment slot="header">
+    <AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
+      <svelte:fragment slot="lead">
+        <strong class="text-xl">🥒 Pickle Hunt</strong>
+      </svelte:fragment>
+
+      <Name />
+
+      <svelte:fragment slot="trail">
+        <LightSwitch />
+      </svelte:fragment>
+    </AppBar>
+  </svelte:fragment>
+
+  <div class="p-2 bg-primary-50-900-token" slot="sidebarLeft">
+    <Nav />
+  </div>
+
+  <slot />
+</AppShell>
