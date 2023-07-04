@@ -1,9 +1,10 @@
 import { localStorageStore } from '@skeletonlabs/skeleton';
-import type { Writable } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 import wretch from 'wretch';
 
 export const achievements: Writable<Record<string, Game> | null> = localStorageStore('achievements', null);
 export const gameNames: Writable<Record<string, string> | null> = localStorageStore('gameNames', null);
+export const selectedTab: Writable<string> = writable('Profile');
 
 const api = wretch('https://api.hypixel.net').resolve((response) => response.json());
 
@@ -69,16 +70,23 @@ type Game = {
   tiered: Record<string, TieredAchievement>;
 };
 
-type OneTimeAchievement = {
-  name: string;
-  description: string;
-  points: number;
-  // gamePercentUnlocked: number;
-  globalPercentUnlocked: number;
-};
+type OneTimeAchievement =
+  | {
+      legacy: true;
+      name: string;
+      description: string;
+      points: number;
+    }
+  | {
+      name: string;
+      description: string;
+      points: number;
+      // gamePercentUnlocked: number;
+      globalPercentUnlocked: number;
+    };
 
 type TieredAchievement = {
   name: string;
   description: string;
-  tiers: { tier: number; points: number; amount: number };
+  tiers: { tier: number; points: number; amount: number }[];
 };

@@ -8,27 +8,17 @@
 
   import '../app.postcss';
 
-  import Name from '$lib/Name.svelte';
-  import { AppBar, AppShell, LightSwitch } from '@skeletonlabs/skeleton';
+  import { AppShell } from '@skeletonlabs/skeleton';
+  import Header from '../lib/Header.svelte';
   import Nav from '../lib/Nav.svelte';
 </script>
 
 <AppShell>
   <svelte:fragment slot="header">
-    <AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
-      <svelte:fragment slot="lead">
-        <strong class="text-xl">🥒 Pickle Hunt</strong>
-      </svelte:fragment>
-
-      <Name />
-
-      <svelte:fragment slot="trail">
-        <LightSwitch />
-      </svelte:fragment>
-    </AppBar>
+    <Header />
   </svelte:fragment>
 
-  <div class="p-2 bg-primary-50-900-token" slot="sidebarLeft">
+  <div slot="sidebarLeft" class="bg-gradient-to-tr from-white/60 to-white/30 p-2">
     <Nav />
   </div>
 

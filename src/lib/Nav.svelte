@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
   import { get } from 'svelte/store';
-  import { achievements, gameNames } from '../main';
+  import { achievements, gameNames, selectedTab } from '../main';
 
   function getGameIcon(gameName: string) {
     const fileNames: Record<string, string> = {
@@ -46,22 +46,32 @@
     return get(gameNames)?.[gameName] ?? '???';
   }
 
-  let valueSingle = 'Profile';
+  let tab = 'Profile';
+
+  $: selectedTab.set(tab);
 </script>
 
-<ListBox padding="py-1 pl-1 pr-2">
-  <ListBoxItem bind:group={valueSingle} name="Profile" value="Profile">
+<ListBox padding="p-1 pr-2" class="select-none">
+  <ListBoxItem bind:group={tab} name="Profile" value="Profile">
     <svelte:fragment slot="lead">
       <img src="https://mc-heads.net/avatar/vojtaprofik/44" alt="" />
     </svelte:fragment>
     Profile
   </ListBoxItem>
 
-  <hr />
+  <hr class="w-1/2" />
 
-  {#if $achievements !== null && $gameNames !== null}
+  {#if $achievements === null || $gameNames === null}
+    {#each Array(20).fill(0) as _}
+      {@const width = ['w-20', 'w-24', 'w-32'][Math.floor(Math.random() * 3)]}
+      <div class="flex items-center gap-4 px-1 py-1 rounded-token">
+        <div class="placeholder h-8 w-8 animate-pulse rounded-md" />
+        <div class="placeholder h-3 animate-pulse {width}" />
+      </div>
+    {/each}
+  {:else}
     {#each Object.entries($achievements) as [name, game]}
-      <ListBoxItem bind:group={valueSingle} {name} value={name}>
+      <ListBoxItem bind:group={tab} {name} value={name}>
         <svelte:fragment slot="lead">
           <img src={getGameIcon(name)} alt="" />
         </svelte:fragment>
@@ -73,11 +83,10 @@
 
 <style>
   img {
-    @apply w-8 rounded-md;
+    @apply h-8 w-8 rounded-md;
   }
 
   hr {
-    @apply w-1/2;
     margin: 0.5rem auto !important;
   }
 </style>
