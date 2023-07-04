@@ -45,14 +45,10 @@
   function getGameName(gameName: string) {
     return get(gameNames)?.[gameName] ?? '???';
   }
-
-  let tab = 'Profile';
-
-  $: selectedTab.set(tab);
 </script>
 
 <ListBox padding="p-1 pr-2" class="select-none">
-  <ListBoxItem bind:group={tab} name="Profile" value="Profile">
+  <ListBoxItem bind:group={$selectedTab} name="profile" value="profile">
     <svelte:fragment slot="lead">
       <img src="https://mc-heads.net/avatar/vojtaprofik/44" alt="" />
     </svelte:fragment>
@@ -70,8 +66,8 @@
       </div>
     {/each}
   {:else}
-    {#each Object.entries($achievements) as [name, game]}
-      <ListBoxItem bind:group={tab} {name} value={name}>
+    {#each Object.keys($achievements) as name}
+      <ListBoxItem bind:group={$selectedTab} {name} value={name}>
         <svelte:fragment slot="lead">
           <img src={getGameIcon(name)} alt="" />
         </svelte:fragment>

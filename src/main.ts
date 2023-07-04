@@ -4,7 +4,7 @@ import wretch from 'wretch';
 
 export const achievements: Writable<Record<string, Game> | null> = localStorageStore('achievements', null);
 export const gameNames: Writable<Record<string, string> | null> = localStorageStore('gameNames', null);
-export const selectedTab: Writable<string> = writable('Profile');
+export const selectedTab: Writable<string> = writable('profile');
 
 const api = wretch('https://api.hypixel.net').resolve((response) => response.json());
 
@@ -15,7 +15,10 @@ export async function getAchievements(): Promise<Record<string, Game>> {
     const achievements: Record<string, Game> = {};
 
     for (const game of Object.keys(response.achievements).sort()) {
-      achievements[game] = response.achievements[game];
+      achievements[game] = {
+        oneTime: response.achievements[game].one_time,
+        tiered: response.achievements[game].tiered,
+      };
     }
 
     return achievements;
@@ -54,7 +57,13 @@ export async function getGameNames(): Promise<Record<string, string>> {
 type APIAchievementsResponse =
   | {
       success: true;
-      achievements: Record<string, Game>;
+      achievements: Record<
+        string,
+        {
+          one_time: Record<string, OneTimeAchievement>;
+          tiered: Record<string, TieredAchievement>;
+        }
+      >;
     }
   | {
       success: false;
@@ -65,12 +74,12 @@ type APIGamesResponse =
   | { success: true; games: Record<string, { name: string; databaseName: string }> }
   | { success: false };
 
-type Game = {
-  one_time: Record<string, OneTimeAchievement>;
+export type Game = {
+  oneTime: Record<string, OneTimeAchievement>;
   tiered: Record<string, TieredAchievement>;
 };
 
-type OneTimeAchievement =
+export type OneTimeAchievement =
   | {
       legacy: true;
       name: string;
@@ -85,7 +94,7 @@ type OneTimeAchievement =
       globalPercentUnlocked: number;
     };
 
-type TieredAchievement = {
+export type TieredAchievement = {
   name: string;
   description: string;
   tiers: { tier: number; points: number; amount: number }[];

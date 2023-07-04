@@ -1,9 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
-  import Achievements from '../lib/Achievements.svelte';
-  import Profile from '../lib/Profile.svelte';
-  import { achievements, gameNames, getAchievements, getGameNames, selectedTab } from '../main';
+  import { achievements, gameNames, getAchievements, getGameNames } from '../main';
 
   onMount(() => {
     if (get(gameNames) === null) {
@@ -18,20 +16,11 @@
       });
     }
   });
-
-  let tab = '';
-
-  selectedTab.subscribe((t) => (tab = t));
 </script>
 
-{#if tab === 'Profile'}
-  <Profile />
-{:else}
-  <Achievements />
-{/if}
+todo landing page
 
-<!-- <div class="container mx-auto flex h-full items-center justify-center">
-  <div class="space-y-5">
-    <button class="btn variant-filled-primary">Hello World</button>
-  </div>
-</div> -->
+<!-- fetch achievements and game names before / while user types their username -->
+<!-- ^ do that every time on the landing page -->
+<!-- also fetch them on username route once they expire (when?) -->
+<!-- infinite speed 🚀 -->

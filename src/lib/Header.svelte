@@ -1,6 +1,7 @@
 <script>
   import { AppBar, LightSwitch } from '@skeletonlabs/skeleton';
-  import Name from './Name.svelte';
+
+  let username = '';
 </script>
 
 <AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
@@ -11,7 +12,11 @@
     </span>
   </svelte:fragment>
 
-  <Name />
+  <form method="GET" action="/{username}" class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+    <input type="text" bind:value={username} placeholder="Minecraft username" />
+
+    <input type="submit" value="Submit" class="cursor-pointer px-4" />
+  </form>
 
   <svelte:fragment slot="trail">
     <LightSwitch />

@@ -1,14 +1,8 @@
 <script lang="ts">
   import { ProgressBar } from '@skeletonlabs/skeleton';
-  import { get } from 'svelte/store';
-  import { achievements, selectedTab } from '../main';
+  import type { Game } from '../main';
 
-  let tab = '';
-
-  selectedTab.subscribe((t) => (tab = t));
-
-  $: oneTime = get(achievements)![tab].one_time;
-  $: tiered = get(achievements)![tab].tiered;
+  export let data: Game;
 
   function formatPercentage(percentage: number): string {
     if (percentage >= 10) return Math.round(percentage).toString();
@@ -30,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each Object.values(tiered) as ach}
+        {#each Object.values(data.tiered) as ach}
           <tr>
             <td>{ach.name}</td>
             <td>{ach.description.replace('%s', `[${ach.tiers.map((t) => t.amount).join(', ')}]`)}</td>
@@ -58,7 +52,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each Object.values(oneTime) as ach}
+        {#each Object.values(data.oneTime) as ach}
           <tr>
             <td>{ach.name}</td>
             <td>{ach.description}</td>
