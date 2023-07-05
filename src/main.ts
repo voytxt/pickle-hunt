@@ -6,7 +6,7 @@ export const achievements: Writable<Record<string, Game> | null> = localStorageS
 export const gameNames: Writable<Record<string, string> | null> = localStorageStore('gameNames', null);
 export const selectedTab: Writable<string> = writable('profile');
 
-const api = wretch('https://api.hypixel.net').resolve((response) => response.json());
+export const api = wretch('https://api.hypixel.net').resolve((response) => response.json());
 
 export async function getAchievements(): Promise<Record<string, Game>> {
   const response = (await api.get('/resources/achievements')) as APIAchievementsResponse;
@@ -90,7 +90,6 @@ export type OneTimeAchievement =
       name: string;
       description: string;
       points: number;
-      // gamePercentUnlocked: number;
       globalPercentUnlocked: number;
     };
 
@@ -99,3 +98,27 @@ export type TieredAchievement = {
   description: string;
   tiers: { tier: number; points: number; amount: number }[];
 };
+
+export type Achs = Record<
+  string,
+  {
+    oneTime: Record<
+      string,
+      | {
+          legacy: true;
+          name: string;
+          description: string;
+          points: number;
+          completed: boolean;
+        }
+      | {
+          name: string;
+          description: string;
+          points: number;
+          completed: boolean;
+          globalPercentUnlocked: number;
+        }
+    >;
+    tiered: Record<string, { name: string; description: string; completed: boolean }>;
+  }
+>;
