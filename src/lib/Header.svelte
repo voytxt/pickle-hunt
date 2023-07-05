@@ -1,15 +1,18 @@
-<script>
+<script lang="ts">
   import { AppBar, LightSwitch } from '@skeletonlabs/skeleton';
 
-  let username = '';
+  export let username = '';
 </script>
 
-<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
+<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end" class="box m-4 mb-0">
   <svelte:fragment slot="lead">
-    <span class="text-2xl font-bold">
+    <a href="/" class="text-2xl font-bold">
       🥒
-      <span class="bg-gradient-to-br from-primary-600 to-secondary-600 bg-clip-text text-transparent">Pickle Hunt</span>
-    </span>
+      <span
+        class="bg-gradient-to-br from-primary-600 to-secondary-600 bg-clip-text text-transparent dark:from-primary-200 dark:to-secondary-200"
+        >Pickle Hunt</span
+      >
+    </a>
   </svelte:fragment>
 
   <form method="GET" action="/{username}" class="input-group input-group-divider grid-cols-[auto_1fr_auto]">

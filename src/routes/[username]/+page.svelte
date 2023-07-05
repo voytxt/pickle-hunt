@@ -12,12 +12,12 @@
 
 <AppShell>
   <svelte:fragment slot="header">
-    <Header />
+    <Header username={data.username} />
   </svelte:fragment>
 
-  <div slot="sidebarLeft" class="bg-gradient-to-tr from-white/60 to-white/30 p-2">
-    <Nav />
-  </div>
+  <svelte:fragment slot="sidebarLeft">
+    <Nav username={data.username} />
+  </svelte:fragment>
 
   {#if $selectedTab === 'profile'}
     <Profile {data} />
