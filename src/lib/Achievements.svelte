@@ -1,26 +1,7 @@
 <script lang="ts">
-  import { ProgressBar } from '@skeletonlabs/skeleton';
+  import type { Achs } from '../main';
 
-  export let achs: {
-    oneTime: Record<
-      string,
-      | {
-          legacy: true;
-          name: string;
-          description: string;
-          points: number;
-          completed: boolean;
-        }
-      | {
-          name: string;
-          description: string;
-          points: number;
-          completed: boolean;
-          globalPercentUnlocked: number;
-        }
-    >;
-    tiered: Record<string, { name: string; description: string; completed: boolean }>;
-  };
+  export let achs: Achs;
 
   function formatPercentage(percentage: number): string {
     if (percentage >= 10) return Math.round(percentage).toString();
@@ -38,20 +19,29 @@
           <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Tiers</th>
+            <th class="table-cell-fit">Tiers</th>
             <th class="table-cell-fit">Reward</th>
           </tr>
         </thead>
         <tbody>
           {#each Object.values(achs.tiered) as ach}
-            <tr>
+            <tr class:completed={ach.completed === ach.tiers.length}>
               <td>{ach.name}</td>
-              <!-- <td>{ach.description.replace('%s', `[${ach.tiers.map((t) => t.amount).join(', ')}]`)}</td> -->
               <td>
-                3/5
-                <ProgressBar label="Progress Bar" value={3} max={5} />
+                {@html ach.description.replace(
+                  '%s',
+                  `<span class="hover:cursor-help hover:underline" title="${ach.tiers.map((t) => t.amount).join(', ')}">
+                    [${ach.amount}/${
+                    ach.tiers[ach.completed]?.amount ?? ach.tiers[ach.tiers.length - 1].amount
+                  }]</span>`
+                )}
               </td>
-              <!-- <td class="table-cell-fit pr-8 text-right">{ach.tiers.map((t) => t.points).join(', ')} APs</td> -->
+              <td class="table-cell-fit">
+                {ach.completed}/{ach.tiers.length}
+              </td>
+              <td class="table-cell-fit pr-8 text-right">
+                {ach.points}/{ach.tiers.map((t) => t.points).reduce((a, b) => a + b, 0)}&nbsp;APs
+              </td>
             </tr>
           {/each}
         </tbody>

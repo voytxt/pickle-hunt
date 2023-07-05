@@ -51,4 +51,5 @@ type APIStatsResponse =
 type Stats = {
   achievementPoints: number;
   achievementsOneTime: string[];
+  achievements: Record<string, number>;
 };

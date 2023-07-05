@@ -99,26 +99,35 @@ export type TieredAchievement = {
   tiers: { tier: number; points: number; amount: number }[];
 };
 
-export type Achs = Record<
-  string,
-  {
-    oneTime: Record<
-      string,
-      | {
-          legacy: true;
-          name: string;
-          description: string;
-          points: number;
-          completed: boolean;
-        }
-      | {
-          name: string;
-          description: string;
-          points: number;
-          completed: boolean;
-          globalPercentUnlocked: number;
-        }
-    >;
-    tiered: Record<string, { name: string; description: string; completed: boolean }>;
-  }
->;
+export type GameAchs = Record<string, Achs>;
+
+export type Achs = {
+  oneTime: Record<
+    string,
+    | {
+        legacy: true;
+        name: string;
+        description: string;
+        points: number;
+        completed: boolean;
+      }
+    | {
+        name: string;
+        description: string;
+        points: number;
+        completed: boolean;
+        globalPercentUnlocked: number;
+      }
+  >;
+  tiered: Record<
+    string,
+    {
+      name: string;
+      description: string;
+      tiers: { tier: number; points: number; amount: number }[];
+      completed: number;
+      points: number;
+      amount: number;
+    }
+  >;
+};

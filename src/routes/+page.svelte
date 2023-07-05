@@ -45,6 +45,6 @@
 
 <style>
   a {
-    @apply font-bold text-cyan-300;
+    @apply font-bold text-primary-700;
   }
 </style>
