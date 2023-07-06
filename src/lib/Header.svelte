@@ -15,7 +15,7 @@
     </a>
   </svelte:fragment>
 
-  <form method="GET" action="/{username}" class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+  <form method="GET" action="/{username}" class="input-group input-group-divider grid-cols-[1fr_auto]">
     <input type="text" bind:value={username} placeholder="Minecraft username" />
 
     <input type="submit" value="Submit" class="cursor-pointer px-4" />

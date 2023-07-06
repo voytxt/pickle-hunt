@@ -58,7 +58,7 @@
   </svelte:fragment>
 
   <svelte:fragment slot="sidebarLeft">
-    <Nav username={data.username} />
+    <Nav uuid={data.uuid} />
   </svelte:fragment>
 
   <svelte:fragment slot="pageHeader">

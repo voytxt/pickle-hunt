@@ -4,5 +4,6 @@
   export let data: PageData;
 </script>
 
-{data.username}
-{data.achievementPoints} APs
+<div class="box m-4 h-[calc(100%-2rem)] p-4">
+  <div class="text-center text-5xl">{data.achievementPoints} / 30000 APs</div>
+</div>

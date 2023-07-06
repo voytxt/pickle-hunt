@@ -3,7 +3,7 @@
   import { filter, sort } from '../main';
 </script>
 
-<div class="box m-4 mb-0 flex justify-center gap-4 p-4">
+<div class="box m-4 mb-0 flex select-none justify-center gap-4 p-4">
   <RadioGroup>
     <RadioItem bind:group={$filter} name="" value="all">All</RadioItem>
     <RadioItem bind:group={$filter} name="" value="completed">Completed</RadioItem>
