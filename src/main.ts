@@ -4,7 +4,9 @@ import wretch from 'wretch';
 
 export const achievements: Writable<Record<string, Game> | null> = localStorageStore('achievements', null);
 export const gameNames: Writable<Record<string, string> | null> = localStorageStore('gameNames', null);
-export const selectedTab: Writable<string> = writable('profile');
+export const selectedTab = writable('profile');
+export const filter = writable<Filter>('all');
+export const sort = writable<Sort>({ direction: 'ascending', criteria: 'name' });
 
 export const api = wretch('https://api.hypixel.net').resolve((response) => response.json());
 
@@ -104,20 +106,12 @@ export type GameAchs = Record<string, Achs>;
 export type Achs = {
   oneTime: Record<
     string,
-    | {
-        legacy: true;
-        name: string;
-        description: string;
-        points: number;
-        completed: boolean;
-      }
-    | {
-        name: string;
-        description: string;
-        points: number;
-        completed: boolean;
-        globalPercentUnlocked: number;
-      }
+    {
+      name: string;
+      description: string;
+      points: number;
+      completed: boolean;
+    } & ({ legacy: true } | { globalPercentUnlocked: number })
   >;
   tiered: Record<
     string,
@@ -128,6 +122,14 @@ export type Achs = {
       completed: number;
       points: number;
       amount: number;
+      maxPoints: number;
     }
   >;
+};
+
+type Filter = 'all' | 'completed' | 'uncompleted';
+
+export type Sort = {
+  criteria: 'name' | 'reward' | 'unlocked';
+  direction: 'ascending' | 'descending';
 };

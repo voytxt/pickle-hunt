@@ -33,7 +33,8 @@
       APIs used: <a href="https://developer.hypixel.net/">Hypixel API</a>, <a href="https://mc-heads.net">MCHeads</a><br
       />
       Technologies: <a href="https://kit.svelte.dev/">SvelteKit</a>,
-      <a href="https://tailwindcss.com/">Tailwind CSS</a>, <a href="https://www.skeleton.dev/">Skeleton UI</a>
+      <a href="https://tailwindcss.com/">Tailwind CSS</a>, <a href="https://www.skeleton.dev/">Skeleton UI</a>,
+      <a href="https://fontawesome.com/">Font Awesome</a>
     </span>
   </div>
 </AppShell>

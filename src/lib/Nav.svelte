@@ -51,7 +51,7 @@
 
 <div class="box m-4 mr-0 h-[calc(100%-2rem)] p-2 pr-1 shadow-md bg-surface-50-900-token rounded-token">
   <ListBox padding="p-1" class="m-2 h-[calc(100%-1rem)] select-none overflow-auto">
-    <ListBoxItem bind:group={$selectedTab} name="profile" value="profile" class="mr-4">
+    <ListBoxItem bind:group={$selectedTab} name="" value="profile" class="mr-4">
       <svelte:fragment slot="lead">
         <img src="https://mc-heads.net/avatar/{username}/44" alt="" />
       </svelte:fragment>

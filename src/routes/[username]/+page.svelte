@@ -3,6 +3,7 @@
   import Achievements from '../../lib/Achievements.svelte';
   import Header from '../../lib/Header.svelte';
   import Nav from '../../lib/Nav.svelte';
+  import PageHeader from '../../lib/PageHeader.svelte';
   import Profile from '../../lib/Profile.svelte';
   import { achievements, selectedTab, type GameAchs } from '../../main';
   import type { PageData } from './$types';
@@ -43,6 +44,7 @@
             completed,
             points,
             amount,
+            maxPoints: ach.tiers.reduce((sum, tier) => sum + tier.points, 0),
           };
         }
       }
@@ -57,6 +59,12 @@
 
   <svelte:fragment slot="sidebarLeft">
     <Nav username={data.username} />
+  </svelte:fragment>
+
+  <svelte:fragment slot="pageHeader">
+    {#if $selectedTab !== 'profile'}
+      <PageHeader />
+    {/if}
   </svelte:fragment>
 
   {#if $selectedTab === 'profile'}
