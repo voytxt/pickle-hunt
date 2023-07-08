@@ -5,30 +5,30 @@ import { api } from '../../main';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params }) => {
-  console.log('[1/3] Fetching uuid for', params.username);
+  const log = (...message: (string | number)[]) => console.log(new Date().toLocaleTimeString(), ...message);
 
-  const uuid = await getUuid(params.username);
+  log('[1/3] Fetching uuid for', params.username);
 
-  console.log('[2/3] Fetching stats for', uuid);
+  // the username that mojang returns is properly capitalized, so we grab it
+  // for example: xxandewtatexx -> XXAndrewTateXX
+  const [uuid, username] = await getUuid(params.username);
+
+  log('[2/3] Fetching stats for', uuid);
 
   const stats = await getStats(uuid);
 
-  console.log('[3/3] Success!', stats.achievementPoints, 'APs\n');
+  log('[3/3] Success!', stats.achievementPoints, 'APs\n');
 
-  return {
-    username: params.username,
-    uuid,
-    ...stats,
-  };
+  return { username, uuid, ...stats };
 }) satisfies PageServerLoad;
 
-async function getUuid(username: string): Promise<string> {
+async function getUuid(username: string): Promise<[string, string]> {
   try {
     const response = (await wretch()
       .get(`https://api.mojang.com/users/profiles/minecraft/${username}`)
       .json()) as APIUuidResponse;
 
-    return response.id;
+    return [response.id, response.name];
   } catch (err) {
     if (err instanceof Error) {
       const cause = JSON.parse(err.message).errorMessage;
@@ -61,16 +61,13 @@ async function getStats(uuid: string): Promise<Stats> {
 
 type APIUuidResponse = {
   id: string;
+  name: string;
 };
 
 type APIStatsResponse = {
   success: true;
   player: Stats;
 };
-// | {
-//     success: false;
-//     cause: string;
-//   };
 
 type Stats = {
   achievementPoints: number;

@@ -52,6 +52,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Pickle Hunt - {data.username}</title>
+</svelte:head>
+
 <AppShell>
   <svelte:fragment slot="header">
     <Header username={data.username} />
