@@ -4,7 +4,7 @@
   import { achievements, gameNames, selectedTab } from '../main';
 
   function getGameIcon(gameName: string) {
-    const fileNames: Record<string, string> = {
+    const minigameFileNames: Record<string, string> = {
       bedwars: 'BedWars',
       skywars: 'Skywars',
       murdermystery: 'MurderMystery',
@@ -33,12 +33,22 @@
       skyclash: 'SkyClash',
     };
 
-    const fileName = fileNames[gameName];
+    const seasonalFileNames: Record<string, string> = {
+      christmas2017: 'https://cdn.discordapp.com/emojis/1096563237929107467.webp',
+      easter: 'https://cdn.discordapp.com/emojis/1096563235752247336.webp',
+      halloween2017: 'https://cdn.discordapp.com/emojis/1096563231155310614.webp',
+      summer: 'https://cdn.discordapp.com/emojis/1096563232816238724.webp',
+    };
 
-    if (fileName === undefined) {
-      return '/hypixel-64.png';
+    const minigameFileName = minigameFileNames[gameName];
+    const seasonalFileName = seasonalFileNames[gameName];
+
+    if (minigameFileName !== undefined) {
+      return `https://hypixel.net/styles/hypixel-v2/images/game-icons/${minigameFileName}-64.png`;
+    } else if (seasonalFileName !== undefined) {
+      return seasonalFileName;
     } else {
-      return 'https://hypixel.net/styles/hypixel-v2/images/game-icons/' + fileNames[gameName] + '-64.png';
+      return '/hypixel-64.png';
     }
   }
 
