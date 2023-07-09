@@ -142,17 +142,17 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
   table tr td {
     padding: 0 1rem;
     @apply text-base;
   }
 
   tr.completed {
-    @apply bg-success-200-700-token;
+    @apply bg-success-300/70 dark:bg-success-600;
   }
 
   tr.completed:nth-child(even) {
-    @apply bg-success-300-600-token;
+    @apply bg-success-300 dark:bg-success-600;
   }
 </style>

@@ -8,10 +8,7 @@
   <svelte:fragment slot="lead">
     <a href="/" class="text-2xl font-bold">
       🥒
-      <span
-        class="bg-gradient-to-br from-primary-600 to-secondary-600 bg-clip-text text-transparent dark:from-primary-200 dark:to-secondary-200"
-        >Pickle Hunt</span
-      >
+      <span class="logo">Pickle Hunt</span>
     </a>
   </svelte:fragment>
 

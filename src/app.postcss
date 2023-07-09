@@ -4,14 +4,19 @@ body {
   overflow: hidden;
 }
 
+/* made with https://csshero.org/mesher/ */
 body {
-  background-color: hsla(262, 82%, 74%, 0.5);
-  background-image: radial-gradient(at 97% 92%, hsla(251, 74%, 46%, 1) 0px, transparent 50%),
-    radial-gradient(at 45% 6%, hsla(259, 80%, 67%, 0.59) 0px, transparent 50%),
-    radial-gradient(at 16% 79%, hsla(291, 81%, 65%, 0.6) 0px, transparent 50%),
-    radial-gradient(at 5% 13%, hsla(350, 82%, 61%, 0.46) 0px, transparent 50%);
+  background-color: hsla(266, 91%, 63%, 0.5);
+  background-image: radial-gradient(at 0% 100%, hsl(294, 94%, 70%) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, hsl(266, 94%, 53%) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsl(284, 96%, 68%) 0px, transparent 50%),
+    radial-gradient(at 20% 10%, hsl(209, 100%, 66%) 0px, transparent 50%);
 }
 
 .box {
-  @apply shadow-md bg-surface-50-900-token rounded-token;
+  @apply shadow-md bg-surface-50-900-token rounded-container-token;
+}
+
+.logo {
+  @apply bg-gradient-to-tr from-primary-500 to-secondary-500 to-60% bg-clip-text text-transparent dark:to-80%;
 }

@@ -67,7 +67,7 @@
       </svelte:fragment>
       Profile
     </ListBoxItem>
-    <hr class="w-1/2" />
+    <hr class="!my-2 mx-auto w-1/2" />
     {#if $achievements === null || $gameNames === null}
       {#each Array(20).fill(0) as _}
         {@const width = ['w-20', 'w-24', 'w-32'][Math.floor(Math.random() * 3)]}
@@ -89,12 +89,8 @@
   </ListBox>
 </div>
 
-<style>
+<style lang="postcss">
   img {
     @apply h-8 w-8 rounded-md;
-  }
-
-  hr {
-    margin: 0.5rem auto !important;
   }
 </style>
