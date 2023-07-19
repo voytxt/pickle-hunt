@@ -1,11 +1,10 @@
 <script lang="ts">
   import { beforeUpdate } from 'svelte';
-  import { filter, sort, type Achs, type Sort } from '../main';
+  import { filter, search, sort, type Achs, type Sort } from '../main';
 
   export let achs: Achs;
 
   sort.subscribe((s) => sortAchs(s));
-
   beforeUpdate(() => sortAchs($sort));
 
   function formatPercentage(percentage: number): string {
@@ -70,6 +69,15 @@
 
     achs = achs;
   }
+
+  // I will refactor all of the types someday, so I don't have to use any
+  function searchAchs(achs: any): any {
+    return achs.filter(
+      (ach: any) =>
+        ach.name.toLowerCase().includes($search.toLowerCase()) ||
+        ach.description.toLowerCase().includes($search.toLowerCase())
+    );
+  }
 </script>
 
 <div class="box relative m-4 h-[calc(100%-2rem)] p-2">
@@ -85,7 +93,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each Object.values(achs.tiered) as ach}
+          {#each searchAchs(Object.values(achs.tiered)) as ach}
             {@const isCompleted = ach.completed === ach.tiers.length}
             {#if $filter === 'all' || ($filter === 'completed' && isCompleted) || ($filter === 'uncompleted' && !isCompleted)}
               <tr class:completed={isCompleted}>
@@ -124,7 +132,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each Object.values(achs.oneTime) as ach}
+          {#each searchAchs(Object.values(achs.oneTime)) as ach}
             {#if $filter === 'all' || ($filter === 'completed' && ach.completed) || ($filter === 'uncompleted' && !ach.completed)}
               <tr class:completed={ach.completed}>
                 <td>{ach.name}</td>

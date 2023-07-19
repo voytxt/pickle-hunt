@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
-  import { filter, sort } from '../main';
+  import { filter, search, sort } from '../main';
 </script>
 
 <div class="box m-4 mb-0 flex select-none justify-center gap-4 p-4">
@@ -9,6 +9,9 @@
     <RadioItem bind:group={$filter} name="" value="completed">Completed</RadioItem>
     <RadioItem bind:group={$filter} name="" value="uncompleted">Uncompleted</RadioItem>
   </RadioGroup>
+
+  <input type="search" bind:value={$search} class="input" placeholder="Search" />
+
   <RadioGroup>
     <RadioItem bind:group={$sort.direction} name="" value="ascending" class="flex h-full">
       <svg xmlns="http://www.w3.org/2000/svg" class="my-auto h-4 fill-current" viewBox="0 0 384 512">
@@ -24,9 +27,7 @@
         />
       </svg>
     </RadioItem>
-    <div />
-    <div class="my-1 w-px bg-surface-400-500-token" />
-    <div />
+    <div class="my-1 !ml-2 !mr-1 w-px bg-surface-400-500-token" />
     <RadioItem bind:group={$sort.criteria} name="" value="name">Name</RadioItem>
     <RadioItem bind:group={$sort.criteria} name="" value="reward">Reward</RadioItem>
     <RadioItem bind:group={$sort.criteria} name="" value="unlocked">Unlocked</RadioItem>

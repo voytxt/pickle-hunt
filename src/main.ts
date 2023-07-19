@@ -6,6 +6,7 @@ export const achievements: Writable<Record<string, Game> | null> = localStorageS
 export const gameNames: Writable<Record<string, string> | null> = localStorageStore('gameNames', null);
 export const selectedTab = writable('profile');
 export const filter = writable<Filter>('all');
+export const search = writable<string>('');
 export const sort = writable<Sort>({ direction: 'ascending', criteria: 'name' });
 
 export const api = wretch('https://api.hypixel.net').resolve((response) => response.json());
