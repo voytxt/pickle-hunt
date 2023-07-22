@@ -5,7 +5,7 @@
   import Nav from '../../lib/Nav.svelte';
   import PageHeader from '../../lib/PageHeader.svelte';
   import Profile from '../../lib/Profile.svelte';
-  import { achievements, selectedTab, type GameAchs } from '../../main';
+  import { achievements, gameNames, selectedTab, type GameAchs } from '../../main';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -62,7 +62,9 @@
   </svelte:fragment>
 
   <svelte:fragment slot="sidebarLeft">
-    <Nav uuid={data.uuid} />
+    {#if $achievements !== null && $gameNames !== null}
+      <Nav uuid={data.uuid} />
+    {/if}
   </svelte:fragment>
 
   <svelte:fragment slot="pageHeader">
