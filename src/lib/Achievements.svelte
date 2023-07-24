@@ -14,6 +14,10 @@
     return percentage.toPrecision(1);
   }
 
+  function formatNumber(num: number): string {
+    return num.toLocaleString('en', { notation: 'compact' });
+  }
+
   function sortAchs(s: Sort) {
     const multiplier = s.direction === 'ascending' ? 1 : -1;
 
@@ -83,13 +87,13 @@
 <div class="box relative m-4 h-[calc(100%-2rem)] p-2">
   <div class="absolute inset-4 right-2 space-y-4 overflow-auto pr-2">
     <div class="table-container">
-      <table class="table-compact table">
+      <table class="table table-compact">
         <thead>
           <tr>
             <th>Name</th>
             <th>Description</th>
-            <th class="table-cell-fit">Tiers</th>
-            <th class="table-cell-fit">Reward</th>
+            <th class="table-cell-fit text-center">Tiers</th>
+            <th class="table-cell-fit text-center">Reward</th>
           </tr>
         </thead>
         <tbody>
@@ -102,18 +106,18 @@
                   {@html ach.description.replace(
                     '%s',
                     `<span class="hover:cursor-help hover:underline" title="${ach.tiers
-                      .map((t) => t.amount)
+                      .map((t) => formatNumber(t.amount))
                       .join(', ')}">
-                    [${ach.amount}/${
+                    [${formatNumber(ach.amount)} / ${formatNumber(
                       ach.tiers[ach.completed]?.amount ?? ach.tiers[ach.tiers.length - 1].amount
-                    }]</span>`
+                    )}]</span>`
                   )}
                 </td>
                 <td class="table-cell-fit text-right">
-                  {ach.completed}/{ach.tiers.length}
+                  {ach.completed}&nbsp;/&nbsp;{ach.tiers.length}
                 </td>
                 <td class="table-cell-fit pr-8 text-right">
-                  {ach.points}/{ach.maxPoints}&nbsp;APs
+                  {ach.points}&nbsp;/&nbsp;{ach.maxPoints}&nbsp;APs
                 </td>
               </tr>
             {/if}
@@ -122,13 +126,13 @@
       </table>
     </div>
     <div class="table-container">
-      <table class="table-compact table">
+      <table class="table table-compact">
         <thead>
           <tr>
             <th>Name</th>
             <th>Description</th>
-            <th class="table-cell-fit">Reward</th>
-            <th class="table-cell-fit">Unlocked</th>
+            <th class="table-cell-fit text-center">Reward</th>
+            <th class="table-cell-fit text-center">Unlocked</th>
           </tr>
         </thead>
         <tbody>
