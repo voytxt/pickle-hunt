@@ -1,73 +1,77 @@
 import { HYPIXEL_API_KEY } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 import wretch from 'wretch';
-import { api } from '../../main';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params }) => {
-  const log = (...message: (string | number)[]) => console.log(new Date().toLocaleTimeString(), ...message);
+  const startTime = new Date().getTime();
 
-  log('[1/3] Fetching uuid for', params.username);
+  console.log('>', params.username);
 
   // the username that mojang returns is properly capitalized, so we grab it
-  // for example: xxandewtatexx -> XXAndrewTateXX
+  // for example: xxandrewtatexx -> XXAndrewTateXX
   const [uuid, username] = await getUuid(params.username);
 
-  log('[2/3] Fetching stats for', uuid);
+  console.log('Got uuid:', uuid);
 
   const stats = await getStats(uuid);
 
-  log('[3/3] Success!', stats.achievementPoints, 'APs\n');
+  console.log('Got stats:', stats.achievementPoints, 'APs');
+
+  console.log('< [200] took', new Date().getTime() - startTime, 'ms');
 
   return { username, uuid, ...stats };
 }) satisfies PageServerLoad;
 
+// https://wiki.vg/Mojang_API#Username_to_UUID
 async function getUuid(username: string): Promise<[string, string]> {
-  try {
-    const response = (await wretch()
-      .get(`https://api.mojang.com/users/profiles/minecraft/${username}`)
-      .json()) as APIUuidResponse;
+  const response: { id?: string; name?: string } = await wretch()
+    .get(`https://api.mojang.com/users/profiles/minecraft/${username}`)
+    .badRequest((err) => {
+      console.error(`< [400] ${err.json.error}: ${err.json.errorMessage}`);
+      throw error(400, err.json.errorMessage);
+    })
+    .notFound((err) => {
+      console.error(`< [404] ${err.json.errorMessage}`);
+      throw error(404, err.json.errorMessage);
+    })
+    .json();
 
-    return [response.id, response.name];
-  } catch (err) {
-    if (err instanceof Error) {
-      const cause = JSON.parse(err.message).errorMessage;
-
-      console.error('ERROR:', cause, '\n');
-      throw error(500, `[Mojang] ${cause}`);
-    } else {
-      console.error('ERROR:', err, '\n');
-      throw error(500, `[Mojang] Unknown error`);
-    }
+  if (response.id === undefined || response.name === undefined) {
+    console.error(`< [500] ${JSON.stringify(response)}`);
+    throw error(500, JSON.stringify(response));
   }
+
+  return [response.id, response.name];
 }
 
+// https://api.hypixel.net/#tag/Player-Data/paths/~1player/get
 async function getStats(uuid: string): Promise<Stats> {
-  try {
-    const response = (await api.get(`/player?key=${HYPIXEL_API_KEY}&uuid=${uuid}`)) as APIStatsResponse;
-    return response.player;
-  } catch (err) {
-    if (err instanceof Error) {
-      const cause = JSON.parse(err.message).cause;
+  const response: { success?: true; player?: Stats } = await wretch()
+    .get(`https://api.hypixel.net/player?key=${HYPIXEL_API_KEY}&uuid=${uuid}`)
+    .badRequest((err) => {
+      console.error(`< [400] ${err.json.cause}`);
+      throw error(400, err.json.cause);
+    })
+    .forbidden((err) => {
+      console.error(`< [403] ${err.json.cause}`);
+      throw error(403, err.json.cause);
+    })
+    .error(429, (err) => {
+      console.error(`< [403] ${err.json.cause}`);
+      throw error(403, err.json.cause);
+    })
+    .json();
 
-      console.error('ERROR:', cause, '\n');
-      throw error(500, `[Hypixel] ${cause}`);
-    } else {
-      console.error('ERROR:', err, '\n');
-      throw error(500, `[Hypixel] Unknown error`);
-    }
+  // if a player is level 0, { success: true, player: null } can happen - this is undocumented behavior
+  // if a player joined before APs were a thing, achievementPoints can be undefined (936555d35b624d74a6b952db395756c1, notch)
+  if (!response.success || response.player == null || response.player.achievementPoints === undefined) {
+    console.error(`< [500] ${JSON.stringify(response)}`);
+    throw error(500, JSON.stringify(response));
   }
+
+  return response.player;
 }
-
-type APIUuidResponse = {
-  id: string;
-  name: string;
-};
-
-type APIStatsResponse = {
-  success: true;
-  player: Stats;
-};
 
 type Stats = {
   achievementPoints: number;
