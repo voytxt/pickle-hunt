@@ -36,6 +36,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@vercel/analytics": "^1.0.1",
     "wretch": "^2.6.0"
   }
 }
