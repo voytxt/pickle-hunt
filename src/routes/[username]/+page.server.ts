@@ -46,8 +46,19 @@ async function getUuid(username: string): Promise<[string, string]> {
 }
 
 // https://api.hypixel.net/#tag/Player-Data/paths/~1player/get
-async function getStats(uuid: string): Promise<Stats> {
-  const response: { success?: true; player?: Stats } = await wretch()
+async function getStats(uuid: string): Promise<{
+  achievementPoints: number;
+  oneTime: string[];
+  tiered: Record<string, number>;
+}> {
+  const response: {
+    success?: true;
+    player?: {
+      achievementPoints: number;
+      achievementsOneTime: string[];
+      achievements: Record<string, number>;
+    };
+  } = await wretch()
     .get(`https://api.hypixel.net/player?key=${HYPIXEL_API_KEY}&uuid=${uuid}`)
     .badRequest((err) => {
       console.error(`< [400] ${err.json.cause}`);
@@ -70,11 +81,9 @@ async function getStats(uuid: string): Promise<Stats> {
     throw error(500, JSON.stringify(response));
   }
 
-  return response.player;
+  return {
+    achievementPoints: response.player.achievementPoints,
+    oneTime: response.player.achievementsOneTime,
+    tiered: response.player.achievements,
+  };
 }
-
-type Stats = {
-  achievementPoints: number;
-  achievementsOneTime: string[];
-  achievements: Record<string, number>;
-};

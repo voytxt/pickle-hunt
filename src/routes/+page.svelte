@@ -3,22 +3,11 @@
   import { AppShell, Modal, modalStore } from '@skeletonlabs/skeleton';
   import { onMount } from 'svelte';
   import { Icon } from 'svelte-awesome';
-  import { get } from 'svelte/store';
   import Header from '../lib/Header.svelte';
-  import { achievements, gameNames, getAchievements, getGameNames } from '../main';
+  import { fetchReference } from '../ts/api';
 
   onMount(() => {
-    if (get(gameNames) === null) {
-      getGameNames().then((data) => {
-        gameNames.set(data);
-      });
-    }
-
-    if (get(achievements) === null) {
-      getAchievements().then((data) => {
-        achievements.set(data);
-      });
-    }
+    fetchReference();
   });
 </script>
 

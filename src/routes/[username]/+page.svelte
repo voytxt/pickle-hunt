@@ -1,55 +1,56 @@
 <script lang="ts">
   import { AppShell } from '@skeletonlabs/skeleton';
+  import { onMount } from 'svelte';
   import Achievements from '../../lib/Achievements.svelte';
   import Header from '../../lib/Header.svelte';
   import Nav from '../../lib/Nav.svelte';
   import PageHeader from '../../lib/PageHeader.svelte';
   import Profile from '../../lib/Profile.svelte';
-  import { achievements, gameNames, selectedTab, type GameAchs } from '../../main';
+  import { fetchReference, gameNames } from '../../ts/api';
+  import { reference, selectedTab } from '../../ts/stores';
   import type { PageData } from './$types';
 
   export let data: PageData;
 
-  const achs: GameAchs = {};
+  const stats: Stats = {};
 
-  $: {
-    if ($achievements !== null) {
-      for (const [gameName, game] of Object.entries($achievements)) {
-        achs[gameName] = { oneTime: {}, tiered: {} };
+  onMount(() => {
+    fetchReference().then((reference) => {
+      for (const [gameName, { gameId, oneTime, tiered }] of Object.entries(reference)) {
+        stats[gameName] = { gameId, oneTime: {}, tiered: {} };
 
-        for (const [id, ach] of Object.entries(game.oneTime)) {
-          achs[gameName].oneTime[id] = {
+        for (const [id, ach] of Object.entries(oneTime)) {
+          stats[gameName].oneTime[id] = {
             ...ach,
-            completed: data.achievementsOneTime.includes(gameName + '_' + id.toLowerCase()),
+            completed: data.oneTime.includes(gameId + '_' + id),
           };
         }
 
-        for (const [id, ach] of Object.entries(game.tiered)) {
-          const amount = data.achievements[gameName + '_' + id.toLowerCase()] ?? 0;
+        for (const [id, ach] of Object.entries(tiered)) {
+          const amount = data.tiered[gameId + '_' + id] ?? 0;
 
-          let completed = 0;
-          let points = 0;
+          let completedTiers = 0;
+          let completedReward = 0;
 
           for (const tier of ach.tiers) {
-            if (amount >= tier.amount) {
-              completed++;
-              points += tier.points;
+            if (amount >= tier.requirement) {
+              completedTiers++;
+              completedReward += tier.reward;
             } else {
               break;
             }
           }
 
-          achs[gameName].tiered[id] = {
+          stats[gameName].tiered[id] = {
             ...ach,
-            completed,
-            points,
             amount,
-            maxPoints: ach.tiers.reduce((sum, tier) => sum + tier.points, 0),
+            completedTiers,
+            completedReward,
           };
         }
       }
-    }
-  }
+    });
+  });
 </script>
 
 <svelte:head>
@@ -62,7 +63,7 @@
   </svelte:fragment>
 
   <svelte:fragment slot="sidebarLeft">
-    {#if $achievements !== null && $gameNames !== null}
+    {#if $reference !== null}
       <Nav uuid={data.uuid} />
     {/if}
   </svelte:fragment>
@@ -73,9 +74,11 @@
     {/if}
   </svelte:fragment>
 
-  {#if $selectedTab === 'profile'}
-    <Profile {data} />
-  {:else}
-    <Achievements achs={achs[$selectedTab]} />
+  {#if $reference !== null}
+    {#if $selectedTab === 'profile'}
+      <Profile {data} />
+    {:else}
+      <Achievements achievements={stats[gameNames[$selectedTab]]} />
+    {/if}
   {/if}
 </AppShell>

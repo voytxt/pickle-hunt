@@ -1,8 +1,11 @@
 <script lang="ts">
   import { beforeUpdate } from 'svelte';
-  import { filter, search, sort, type Achs, type Sort } from '../main';
+  import { filter, search, sort } from '../ts/stores';
 
-  export let achs: Achs;
+  export let achievements: {
+    oneTime: Record<string, OneTimeAchievement>;
+    tiered: Record<string, TieredAchievement>;
+  };
 
   sort.subscribe((s) => sortAchs(s));
   beforeUpdate(() => sortAchs($sort));
@@ -22,8 +25,8 @@
     const multiplier = s.direction === 'ascending' ? 1 : -1;
 
     if (s.criteria === 'name') {
-      achs.oneTime = Object.fromEntries(
-        Object.entries(achs.oneTime).sort(([, a], [, b]) => {
+      achievements.oneTime = Object.fromEntries(
+        Object.entries(achievements.oneTime).sort(([, a], [, b]) => {
           if (a.name > b.name) return 1 * multiplier;
           if (a.name < b.name) return -1 * multiplier;
 
@@ -31,8 +34,8 @@
         })
       );
 
-      achs.tiered = Object.fromEntries(
-        Object.entries(achs.tiered).sort(([, a], [, b]) => {
+      achievements.tiered = Object.fromEntries(
+        Object.entries(achievements.tiered).sort(([, a], [, b]) => {
           if (a.name > b.name) return 1 * multiplier;
           if (a.name < b.name) return -1 * multiplier;
 
@@ -40,44 +43,45 @@
         })
       );
     } else if (s.criteria === 'reward') {
-      achs.oneTime = Object.fromEntries(
-        Object.entries(achs.oneTime).sort(([, a], [, b]) => {
-          if (a.points > b.points) return 1 * multiplier;
-          if (a.points < b.points) return -1 * multiplier;
+      achievements.oneTime = Object.fromEntries(
+        Object.entries(achievements.oneTime).sort(([, a], [, b]) => {
+          if (a.reward > b.reward) return 1 * multiplier;
+          if (a.reward < b.reward) return -1 * multiplier;
 
           return 0;
         })
       );
 
-      achs.tiered = Object.fromEntries(
-        Object.entries(achs.tiered).sort(([, a], [, b]) => {
-          if (a.maxPoints > b.maxPoints) return 1 * multiplier;
-          if (a.maxPoints < b.maxPoints) return -1 * multiplier;
+      achievements.tiered = Object.fromEntries(
+        Object.entries(achievements.tiered).sort(([, a], [, b]) => {
+          if (a.reward > b.reward) return 1 * multiplier;
+          if (a.reward < b.reward) return -1 * multiplier;
 
           return 0;
         })
       );
     } else if (s.criteria === 'unlocked') {
-      achs.oneTime = Object.fromEntries(
-        Object.entries(achs.oneTime).sort(([, a], [, b]) => {
+      achievements.oneTime = Object.fromEntries(
+        Object.entries(achievements.oneTime).sort(([, a], [, b]) => {
           if ('legacy' in a) return 1;
           if ('legacy' in b) return -1;
 
-          if (a.globalPercentUnlocked > b.globalPercentUnlocked) return 1 * multiplier;
-          if (a.globalPercentUnlocked < b.globalPercentUnlocked) return -1 * multiplier;
+          if ('percentage' in a && 'percentage' in b) {
+            if (a.percentage > b.percentage) return 1 * multiplier;
+            if (a.percentage < b.percentage) return -1 * multiplier;
+          }
 
           return 0;
         })
       );
     }
 
-    achs = achs;
+    achievements = achievements;
   }
 
-  // I will refactor all of the types someday, so I don't have to use any
-  function searchAchs(achs: any): any {
+  function searchAchs<A extends { name: string; description: string }>(achs: Array<A>): Array<A> {
     return achs.filter(
-      (ach: any) =>
+      (ach) =>
         ach.name.toLowerCase().includes($search.toLowerCase()) ||
         ach.description.toLowerCase().includes($search.toLowerCase())
     );
@@ -97,27 +101,28 @@
           </tr>
         </thead>
         <tbody>
-          {#each searchAchs(Object.values(achs.tiered)) as ach}
-            {@const isCompleted = ach.completed === ach.tiers.length}
-            {#if $filter === 'all' || ($filter === 'completed' && isCompleted) || ($filter === 'uncompleted' && !isCompleted)}
-              <tr class:completed={isCompleted}>
+          {#each searchAchs(Object.values(achievements.tiered)) as ach}
+            {@const completed = ach.completedReward === ach.reward}
+
+            {#if $filter === 'all' || ($filter === 'completed' && completed) || ($filter === 'uncompleted' && !completed)}
+              <tr class:completed>
                 <td>{ach.name}</td>
                 <td>
                   {@html ach.description.replace(
                     '%s',
                     `<span class="hover:cursor-help hover:underline" title="${ach.tiers
-                      .map((t) => formatNumber(t.amount))
+                      .map((t) => formatNumber(t.requirement))
                       .join(', ')}">
                     [${formatNumber(ach.amount)} / ${formatNumber(
-                      ach.tiers[ach.completed]?.amount ?? ach.tiers[ach.tiers.length - 1].amount
+                      ach.tiers[ach.completedTiers]?.requirement ?? ach.tiers[ach.tiers.length - 1].requirement
                     )}]</span>`
                   )}
                 </td>
                 <td class="table-cell-fit text-right">
-                  {ach.completed}&nbsp;/&nbsp;{ach.tiers.length}
+                  {ach.completedTiers}&nbsp;/&nbsp;{ach.tiers.length}
                 </td>
                 <td class="table-cell-fit pr-8 text-right">
-                  {ach.points}&nbsp;/&nbsp;{ach.maxPoints}&nbsp;APs
+                  {ach.completedReward}&nbsp;/&nbsp;{ach.reward}&nbsp;APs
                 </td>
               </tr>
             {/if}
@@ -136,14 +141,15 @@
           </tr>
         </thead>
         <tbody>
-          {#each searchAchs(Object.values(achs.oneTime)) as ach}
+          {#each searchAchs(Object.values(achievements.oneTime)) as ach}
+            <!-- {#each Object.values(achievements.oneTime) as ach} -->
             {#if $filter === 'all' || ($filter === 'completed' && ach.completed) || ($filter === 'uncompleted' && !ach.completed)}
               <tr class:completed={ach.completed}>
                 <td>{ach.name}</td>
                 <td>{ach.description}</td>
-                <td class="table-cell-fit pr-8 text-right">{ach.points} APs</td>
+                <td class="table-cell-fit pr-8 text-right">{ach.reward} APs</td>
                 <td class="table-cell-fit pr-8 text-right">
-                  {'globalPercentUnlocked' in ach ? formatPercentage(ach.globalPercentUnlocked) + '%' : 'legacy'}
+                  {'percentage' in ach ? formatPercentage(ach.percentage) + '%' : 'legacy'}
                 </td>
               </tr>
             {/if}

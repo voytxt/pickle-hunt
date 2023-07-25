@@ -1,34 +1,30 @@
 <script lang="ts">
   import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
-  import { achievements, gameNames, selectedTab } from '../main';
+  import { reference, selectedTab } from '../ts/stores';
 
   export let uuid: string;
 
-  type Tab = 'hr' | { id: string; name: string; displayName: string; icon: string };
+  type Tab = 'hr' | { name: string; id: string; icon: string };
 
   function getTabs(): Tab[] {
-    const games = Object.keys($achievements!).map((id) => {
-      const displayName = $gameNames![id];
-      const name = displayName.toLowerCase();
-
+    const games = Object.entries($reference!).map(([name, { gameId }]) => {
       return {
-        id,
         name,
-        displayName,
+        id: gameId,
 
         // game icons from https://hypixel.net/styles/hypixel-v2/images/game-icons/GameName-64.png
         // seasonal icons from the hypixel achievement hunting community discord server
         // "general" icon (hypixel logo) from https://www.facebook.com/Hypixel/ and manually rescaled to 64x64
-        icon: `/icons/${name}.png`,
+        icon: `/icons/${name.toLowerCase()}.png`,
       };
     });
 
     const priorities: Record<string, number> = {
-      general: -1,
-      easter: -2,
-      summer: -3,
-      halloween: -4,
-      christmas: -5,
+      General: -1,
+      Easter: -2,
+      Summer: -3,
+      Halloween: -4,
+      Christmas: -5,
     };
 
     const tabs: Tab[] = games.sort((a, b) => {
@@ -51,9 +47,8 @@
     });
 
     tabs.unshift({
+      name: 'Profile',
       id: 'profile',
-      name: 'profile',
-      displayName: 'Profile',
       icon: `https://mc-heads.net/avatar/${uuid}/44`,
     });
 
@@ -74,7 +69,7 @@
           <svelte:fragment slot="lead">
             <img src={tab.icon} class="h-8 w-8 rounded-md" alt="" />
           </svelte:fragment>
-          {tab.displayName}
+          {tab.name}
         </ListBoxItem>
       {/if}
     {/each}

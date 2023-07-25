@@ -4,7 +4,7 @@
   import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
   import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
   import { Icon } from 'svelte-awesome';
-  import { filter, search, sort } from '../main';
+  import { filter, search, sort } from '../ts/stores';
 </script>
 
 <div class="box m-4 mb-0 flex select-none justify-center gap-4 p-4">
