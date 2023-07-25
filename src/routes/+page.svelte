@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { faFontAwesome } from '@fortawesome/free-solid-svg-icons/faFontAwesome';
   import { AppShell, Modal, modalStore } from '@skeletonlabs/skeleton';
   import { onMount } from 'svelte';
+  import { Icon } from 'svelte-awesome';
   import { get } from 'svelte/store';
   import Header from '../lib/Header.svelte';
   import { achievements, gameNames, getAchievements, getGameNames } from '../main';
@@ -42,16 +44,12 @@
 
       <div class="logo-cloud grid-cols-3 gap-0.5">
         <a href="https://mc-heads.net" target="_blank" class="logo-item">
-          <img src="https://mc-heads.net/avatar/MHF_Steve/24" alt="" />
+          <img src="https://mc-heads.net/avatar/MHF_Steve/24" class="h-8" alt="" />
           <span>MCHeads</span>
         </a>
 
         <a href="https://fontawesome.com" target="_blank" class="logo-item">
-          <svg xmlns="http://www.w3.org/2000/svg" class="fill-current" viewBox="0 0 448 512">
-            <path
-              d="M448 48V384c-63.1 22.5-82.3 32-119.5 32c-62.8 0-86.6-32-149.3-32c-20.6 0-36.6 3.6-51.2 8.2v-64c14.6-4.6 30.6-8.2 51.2-8.2c62.7 0 86.5 32 149.3 32c20.4 0 35.6-3 55.5-9.3v-208c-19.9 6.3-35.1 9.3-55.5 9.3c-62.8 0-86.6-32-149.3-32c-50.8 0-74.9 20.6-115.2 28.7V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V64C0 46.3 14.3 32 32 32s32 14.3 32 32V76.7c40.3-8 64.4-28.7 115.2-28.7c62.7 0 86.5 32 149.3 32c37.1 0 56.4-9.5 119.5-32z"
-            />
-          </svg>
+          <Icon data={faFontAwesome} scale={2} />
           <span>Font Awesome</span>
         </a>
 
@@ -66,7 +64,7 @@
             });
           }}
         >
-          <img src="https://cdn.discordapp.com/emojis/1096563237929107467.webp" alt="" />
+          <img src="/icons/christmas.png" class="h-8" alt="" />
           <span>Momen & Litphoenix</span>
         </button>
       </div>
@@ -77,10 +75,5 @@
 <style lang="postcss">
   .logo-item {
     @apply px-6;
-  }
-
-  .logo-item img,
-  .logo-item svg {
-    @apply h-8;
   }
 </style>
