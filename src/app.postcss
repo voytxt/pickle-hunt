@@ -11,12 +11,14 @@ body {
     radial-gradient(at 100% 100%, hsl(266, 94%, 53%) 0px, transparent 50%),
     radial-gradient(at 100% 0%, hsl(284, 96%, 68%) 0px, transparent 50%),
     radial-gradient(at 20% 10%, hsl(209, 100%, 66%) 0px, transparent 50%);
+
+  @apply dark:backdrop-brightness-75;
 }
 
 .box {
-  @apply shadow-md bg-surface-50-900-token rounded-container-token;
+  @apply bg-surface-50-900-token shadow-md rounded-container-token;
 }
 
 .logo {
-  @apply bg-gradient-to-tr from-primary-500 to-secondary-500 to-60% bg-clip-text text-transparent dark:to-80%;
+  @apply bg-gradient-to-tr from-primary-500 to-secondary-500 to-60% bg-clip-text text-transparent dark:from-primary-300 dark:to-secondary-400 dark:to-50%;
 }

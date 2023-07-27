@@ -142,7 +142,6 @@
         </thead>
         <tbody>
           {#each searchAchs(Object.values(achievements.oneTime)) as ach}
-            <!-- {#each Object.values(achievements.oneTime) as ach} -->
             {#if $filter === 'all' || ($filter === 'completed' && ach.completed) || ($filter === 'uncompleted' && !ach.completed)}
               <tr class:completed={ach.completed}>
                 <td>{ach.name}</td>
@@ -167,10 +166,6 @@
   }
 
   tr.completed {
-    @apply bg-success-300/70 dark:bg-success-600;
-  }
-
-  tr.completed:nth-child(even) {
-    @apply bg-success-300 dark:bg-success-600;
+    @apply bg-success-300 text-success-900 dark:bg-success-600/70 dark:text-white;
   }
 </style>
