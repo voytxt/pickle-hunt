@@ -20,7 +20,7 @@
 
   <div class="flex h-full items-center justify-center gap-4">
     <div class="box p-10 !shadow-2xl">
-      <h1 class="logo h1 mb-3 text-center font-bold">Pickle Hunt</h1>
+      <h1 class="logo h1 mb-3 text-center text-5xl font-bold">Pickle Hunt</h1>
 
       <h2 class="h2 text-center text-2xl">
         Hypixel Achievement Tracker by

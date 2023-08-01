@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+  import { ListBox, ListBoxItem, drawerStore } from '@skeletonlabs/skeleton';
   import { reference, selectedTab } from '../ts/stores';
 
   export let uuid: string;
@@ -59,13 +59,26 @@
   }
 </script>
 
-<div class="box bg-surface-50-900-token m-4 mr-0 h-[calc(100%-2rem)] p-2 pr-1 shadow-md rounded-token">
-  <ListBox padding="p-1" class="m-2 h-[calc(100%-1rem)] select-none overflow-auto">
+<div class="box bg-surface-50-900-token h-[calc(100%-1rem)] p-2 pr-1 shadow-md rounded-token lg:h-[calc(100%-2rem)]">
+  <div class="mb-4 mr-6 text-center lg:hidden">
+    <a href="/" class="text-2xl font-bold">
+      🥒
+      <span class="logo">Pickle Hunt</span>
+    </a>
+  </div>
+
+  <ListBox padding="p-1" class="m-2 h-[calc(100%-3.5rem)] select-none overflow-auto lg:h-[calc(100%-1rem)]">
     {#each getTabs() as tab}
       {#if tab === 'hr'}
         <hr class="!my-2 mx-auto w-1/2" />
       {:else}
-        <ListBoxItem bind:group={$selectedTab} value={tab.id} class="mr-4" name="tab">
+        <ListBoxItem
+          on:click={() => drawerStore.close()}
+          bind:group={$selectedTab}
+          value={tab.id}
+          class="mr-4"
+          name="tab"
+        >
           <svelte:fragment slot="lead">
             <img src={tab.icon} class="h-8 w-8 rounded-md" alt="" />
           </svelte:fragment>

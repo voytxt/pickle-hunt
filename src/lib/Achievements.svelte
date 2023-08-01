@@ -88,8 +88,8 @@
   }
 </script>
 
-<div class="box relative m-4 h-[calc(100%-2rem)] p-2">
-  <div class="absolute inset-4 right-2 space-y-4 overflow-auto pr-2">
+<div class="box relative mr-2 h-[calc(100%-1rem)] lg:mr-4 lg:h-[calc(100%-2rem)]">
+  <div class="absolute inset-2 right-0 space-y-4 overflow-auto lg:inset-4 lg:right-2 lg:pr-2">
     <div class="table-container">
       <table class="table table-compact">
         <thead>

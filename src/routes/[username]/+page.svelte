@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AppShell } from '@skeletonlabs/skeleton';
+  import { AppShell, Drawer } from '@skeletonlabs/skeleton';
   import { onMount } from 'svelte';
   import Achievements from '../../lib/Achievements.svelte';
   import Header from '../../lib/Header.svelte';
@@ -57,6 +57,10 @@
   <title>Pickle Hunt - {data.username}</title>
 </svelte:head>
 
+<Drawer width="w-max" bgDrawer="bg-transparent">
+  <Nav uuid={data.uuid} />
+</Drawer>
+
 <AppShell>
   <svelte:fragment slot="header">
     <Header username={data.username} />
@@ -64,7 +68,9 @@
 
   <svelte:fragment slot="sidebarLeft">
     {#if $reference !== null}
-      <Nav uuid={data.uuid} />
+      <span class="hidden lg:inline">
+        <Nav uuid={data.uuid} />
+      </span>
     {/if}
   </svelte:fragment>
 

@@ -7,7 +7,31 @@
   import { filter, search, sort } from '../ts/stores';
 </script>
 
-<div class="box m-4 mb-0 flex select-none justify-center gap-4 p-4">
+<!-- Mobile -->
+<div class="box mr-2 flex gap-2 p-2 lg:hidden">
+  <select class="select w-max" bind:value={$filter}>
+    <option value="all">All</option>
+    <option value="completed">Completed</option>
+    <option value="uncompleted">Uncompleted</option>
+  </select>
+
+  <div class="flex-1" />
+
+  <select class="select w-max" bind:value={$sort.direction}>
+    <option value="ascending" class="flex h-full">&uarr;</option>
+    <option value="descending" class="flex h-full">&darr;</option>
+  </select>
+
+  <select class="select w-max self-end" bind:value={$sort.criteria}>
+    <div class="bg-surface-400-500-token my-1 !ml-2 !mr-1 w-px" />
+    <option value="name">Name</option>
+    <option value="reward">Reward</option>
+    <option value="unlocked">Unlocked</option>
+  </select>
+</div>
+
+<!-- Desktop -->
+<div class="box mr-4 hidden select-none justify-center gap-4 p-4 lg:flex">
   <RadioGroup>
     <RadioItem bind:group={$filter} name="" value="all">All</RadioItem>
     <RadioItem bind:group={$filter} name="" value="completed">Completed</RadioItem>
