@@ -12,45 +12,51 @@
 
   export let data: PageData;
 
-  const stats: Stats = {};
+  const stats: Stats | null = $reference === null ? null : getStats($reference);
 
   onMount(() => {
-    fetchReference().then((reference) => {
-      for (const [gameName, { gameId, oneTime, tiered }] of Object.entries(reference)) {
-        stats[gameName] = { gameId, oneTime: {}, tiered: {} };
-
-        for (const [id, ach] of Object.entries(oneTime)) {
-          stats[gameName].oneTime[id] = {
-            ...ach,
-            completed: data.oneTime.includes(gameId + '_' + id),
-          };
-        }
-
-        for (const [id, ach] of Object.entries(tiered)) {
-          const amount = data.tiered[gameId + '_' + id] ?? 0;
-
-          let completedTiers = 0;
-          let completedReward = 0;
-
-          for (const tier of ach.tiers) {
-            if (amount >= tier.requirement) {
-              completedTiers++;
-              completedReward += tier.reward;
-            } else {
-              break;
-            }
-          }
-
-          stats[gameName].tiered[id] = {
-            ...ach,
-            amount,
-            completedTiers,
-            completedReward,
-          };
-        }
-      }
-    });
+    fetchReference();
   });
+
+  function getStats(reference: Reference) {
+    const stats: Stats = {};
+
+    for (const [gameName, { gameId, oneTime, tiered }] of Object.entries(reference)) {
+      stats[gameName] = { gameId, oneTime: {}, tiered: {} };
+
+      for (const [id, ach] of Object.entries(oneTime)) {
+        stats[gameName].oneTime[id] = {
+          ...ach,
+          completed: data.oneTime.includes(gameId + '_' + id),
+        };
+      }
+
+      for (const [id, ach] of Object.entries(tiered)) {
+        const amount = data.tiered[gameId + '_' + id] ?? 0;
+
+        let completedTiers = 0;
+        let completedReward = 0;
+
+        for (const tier of ach.tiers) {
+          if (amount >= tier.requirement) {
+            completedTiers++;
+            completedReward += tier.reward;
+          } else {
+            break;
+          }
+        }
+
+        stats[gameName].tiered[id] = {
+          ...ach,
+          amount,
+          completedTiers,
+          completedReward,
+        };
+      }
+    }
+
+    return stats;
+  }
 </script>
 
 <svelte:head>
@@ -67,7 +73,7 @@
   </svelte:fragment>
 
   <svelte:fragment slot="sidebarLeft">
-    {#if $reference !== null}
+    {#if stats !== null}
       <span class="hidden lg:inline">
         <Nav uuid={data.uuid} />
       </span>
@@ -80,7 +86,7 @@
     {/if}
   </svelte:fragment>
 
-  {#if $reference !== null}
+  {#if stats !== null}
     {#if $selectedTab === 'profile'}
       <Profile {data} />
     {:else}

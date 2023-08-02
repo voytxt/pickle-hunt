@@ -33,7 +33,7 @@
 
       <div class="logo-cloud grid-cols-3 gap-0.5">
         <a href="https://mc-heads.net" target="_blank" class="logo-item">
-          <img src="https://mc-heads.net/avatar/MHF_Steve/24" class="h-8" alt="" />
+          <img src="https://mc-heads.net/avatar/MHF_Steve/32" alt="" />
           <span>MCHeads</span>
         </a>
 
