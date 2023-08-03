@@ -1,32 +1,48 @@
 <script lang="ts">
-  import { beforeUpdate } from 'svelte';
-  import { filter, search, sort } from '../ts/stores';
+  import { gameNames } from './api';
+  import { filter, search, selectedTab, sort, stats } from './stores';
 
-  export let achievements: {
-    oneTime: Record<string, OneTimeAchievement>;
-    tiered: Record<string, TieredAchievement>;
-  };
+  let game: Game | null = null;
 
-  sort.subscribe((s) => sortAchs(s));
-  beforeUpdate(() => sortAchs($sort));
-
-  function formatPercentage(percentage: number): string {
-    if (percentage >= 10) return Math.round(percentage).toString();
-    if (percentage >= 1) return (Math.round(percentage * 10) / 10).toString();
-
-    return percentage.toPrecision(1);
+  $: {
+    if ($stats !== null && $selectedTab !== 'profile') {
+      game = structuredClone($stats[gameNames[$selectedTab]]);
+      game = searchAndFilterAchs(game, $search, $filter);
+      game = sortAchs(game, $sort);
+    }
   }
 
-  function formatNumber(num: number): string {
-    return num.toLocaleString('en', { notation: 'compact' });
+  function searchAndFilterAchs(game: Game, search: string, filter: Filter): Game {
+    let searchString = search.toLowerCase();
+    const searchIncludes = (str: string) => str.toLowerCase().includes(searchString);
+
+    let filterCompleted = filter === 'completed';
+    const filterIncludes = (completed: boolean) => filterCompleted === completed || filter === 'all';
+
+    game.oneTime = Object.fromEntries(
+      Object.entries(game.oneTime).filter(([, ach]) => {
+        return filterIncludes(ach.completed) && (searchIncludes(ach.name) || searchIncludes(ach.description));
+      })
+    );
+
+    game.tiered = Object.fromEntries(
+      Object.entries(game.tiered).filter(([, ach]) => {
+        return (
+          filterIncludes(ach.completedReward === ach.reward) &&
+          (searchIncludes(ach.name) || searchIncludes(ach.description))
+        );
+      })
+    );
+
+    return game;
   }
 
-  function sortAchs(s: Sort) {
-    const multiplier = s.direction === 'ascending' ? 1 : -1;
+  function sortAchs(game: Game, sort: Sort): Game {
+    const multiplier = sort.direction === 'ascending' ? 1 : -1;
 
-    if (s.criteria === 'name') {
-      achievements.oneTime = Object.fromEntries(
-        Object.entries(achievements.oneTime).sort(([, a], [, b]) => {
+    if (sort.criteria === 'name') {
+      game.oneTime = Object.fromEntries(
+        Object.entries(game.oneTime).sort(([, a], [, b]) => {
           if (a.name > b.name) return 1 * multiplier;
           if (a.name < b.name) return -1 * multiplier;
 
@@ -34,17 +50,17 @@
         })
       );
 
-      achievements.tiered = Object.fromEntries(
-        Object.entries(achievements.tiered).sort(([, a], [, b]) => {
+      game.tiered = Object.fromEntries(
+        Object.entries(game.tiered).sort(([, a], [, b]) => {
           if (a.name > b.name) return 1 * multiplier;
           if (a.name < b.name) return -1 * multiplier;
 
           return 0;
         })
       );
-    } else if (s.criteria === 'reward') {
-      achievements.oneTime = Object.fromEntries(
-        Object.entries(achievements.oneTime).sort(([, a], [, b]) => {
+    } else if (sort.criteria === 'reward') {
+      game.oneTime = Object.fromEntries(
+        Object.entries(game.oneTime).sort(([, a], [, b]) => {
           if (a.reward > b.reward) return 1 * multiplier;
           if (a.reward < b.reward) return -1 * multiplier;
 
@@ -52,17 +68,17 @@
         })
       );
 
-      achievements.tiered = Object.fromEntries(
-        Object.entries(achievements.tiered).sort(([, a], [, b]) => {
+      game.tiered = Object.fromEntries(
+        Object.entries(game.tiered).sort(([, a], [, b]) => {
           if (a.reward > b.reward) return 1 * multiplier;
           if (a.reward < b.reward) return -1 * multiplier;
 
           return 0;
         })
       );
-    } else if (s.criteria === 'unlocked') {
-      achievements.oneTime = Object.fromEntries(
-        Object.entries(achievements.oneTime).sort(([, a], [, b]) => {
+    } else if (sort.criteria === 'unlocked') {
+      game.oneTime = Object.fromEntries(
+        Object.entries(game.oneTime).sort(([, a], [, b]) => {
           if ('legacy' in a) return 1;
           if ('legacy' in b) return -1;
 
@@ -76,36 +92,37 @@
       );
     }
 
-    achievements = achievements;
+    return game;
   }
 
-  function searchAchs<A extends { name: string; description: string }>(achs: Array<A>): Array<A> {
-    return achs.filter(
-      (ach) =>
-        ach.name.toLowerCase().includes($search.toLowerCase()) ||
-        ach.description.toLowerCase().includes($search.toLowerCase())
-    );
+  function formatNumber(num: number): string {
+    return num.toLocaleString('en', { notation: 'compact' });
+  }
+
+  function formatPercentage(percentage: number): string {
+    if (percentage >= 10) return Math.round(percentage).toString();
+    if (percentage >= 1) return (Math.round(percentage * 10) / 10).toString();
+
+    return percentage.toPrecision(1);
   }
 </script>
 
-<div class="box relative mr-2 h-[calc(100%-1rem)] lg:mr-4 lg:h-[calc(100%-2rem)]">
-  <div class="absolute inset-2 right-0 space-y-4 overflow-auto lg:inset-4 lg:right-2 lg:pr-2">
-    <div class="table-container">
-      <table class="table table-compact">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th class="table-cell-fit text-center">Tiers</th>
-            <th class="table-cell-fit text-center">Reward</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each searchAchs(Object.values(achievements.tiered)) as ach}
-            {@const completed = ach.completedReward === ach.reward}
-
-            {#if $filter === 'all' || ($filter === 'completed' && completed) || ($filter === 'uncompleted' && !completed)}
-              <tr class:completed>
+{#if game !== null}
+  <div class="box relative mr-2 h-[calc(100%-1rem)] lg:mr-4 lg:h-[calc(100%-2rem)]">
+    <div class="absolute inset-2 right-0 space-y-4 overflow-auto lg:inset-4 lg:right-2 lg:pr-2">
+      <div class="table-container">
+        <table class="table table-compact">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th class="table-cell-fit text-center">Tiers</th>
+              <th class="table-cell-fit text-center">Reward</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each Object.values(game.tiered) as ach}
+              <tr class:completed={ach.completedReward === ach.reward}>
                 <td>{ach.name}</td>
                 <td>
                   {@html ach.description.replace(
@@ -125,24 +142,22 @@
                   {ach.completedReward}&nbsp;/&nbsp;{ach.reward}&nbsp;APs
                 </td>
               </tr>
-            {/if}
-          {/each}
-        </tbody>
-      </table>
-    </div>
-    <div class="table-container">
-      <table class="table table-compact">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th class="table-cell-fit text-center">Reward</th>
-            <th class="table-cell-fit text-center">Unlocked</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each searchAchs(Object.values(achievements.oneTime)) as ach}
-            {#if $filter === 'all' || ($filter === 'completed' && ach.completed) || ($filter === 'uncompleted' && !ach.completed)}
+            {/each}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-container">
+        <table class="table table-compact">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th class="table-cell-fit text-center">Reward</th>
+              <th class="table-cell-fit text-center">Unlocked</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each Object.values(game.oneTime) as ach}
               <tr class:completed={ach.completed}>
                 <td>{ach.name}</td>
                 <td>{ach.description}</td>
@@ -151,18 +166,17 @@
                   {'percentage' in ach ? formatPercentage(ach.percentage) + '%' : 'legacy'}
                 </td>
               </tr>
-            {/if}
-          {/each}
-        </tbody>
-      </table>
+            {/each}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
+{/if}
 
 <style lang="postcss">
   table tr td {
-    padding: 0 1rem;
-    @apply text-base;
+    @apply px-4 text-base;
   }
 
   tr.completed {

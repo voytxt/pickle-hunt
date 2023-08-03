@@ -1,33 +1,40 @@
 <script lang="ts">
+  import Achievements from '$lib/Achievements.svelte';
+  import Header from '$lib/Header.svelte';
+  import Nav from '$lib/Nav.svelte';
+  import PageHeader from '$lib/PageHeader.svelte';
+  import Profile from '$lib/Profile.svelte';
+  import { fetchReference } from '$lib/api';
+  import { reference, selectedTab, stats } from '$lib/stores';
   import { AppShell, Drawer } from '@skeletonlabs/skeleton';
   import { onMount } from 'svelte';
-  import Achievements from '../../lib/Achievements.svelte';
-  import Header from '../../lib/Header.svelte';
-  import Nav from '../../lib/Nav.svelte';
-  import PageHeader from '../../lib/PageHeader.svelte';
-  import Profile from '../../lib/Profile.svelte';
-  import { fetchReference, gameNames } from '../../ts/api';
-  import { reference, selectedTab } from '../../ts/stores';
   import type { PageData } from './$types';
 
   export let data: PageData;
-
-  const stats: Stats | null = $reference === null ? null : getStats($reference);
 
   onMount(() => {
     fetchReference();
   });
 
+  if ($reference !== null) {
+    $stats = getStats($reference);
+  }
+
   function getStats(reference: Reference) {
     const stats: Stats = {};
 
     for (const [gameName, { gameId, oneTime, tiered }] of Object.entries(reference)) {
-      stats[gameName] = { gameId, oneTime: {}, tiered: {} };
+      stats[gameName] = { gameId, oneTime: {}, tiered: {}, completedReward: 0, totalReward: 0 };
 
       for (const [id, ach] of Object.entries(oneTime)) {
+        const completed = data.oneTime.includes(gameId + '_' + id);
+
+        stats[gameName].totalReward += ach.reward;
+        if (completed) stats[gameName].completedReward += ach.reward;
+
         stats[gameName].oneTime[id] = {
           ...ach,
-          completed: data.oneTime.includes(gameId + '_' + id),
+          completed,
         };
       }
 
@@ -73,7 +80,7 @@
   </svelte:fragment>
 
   <svelte:fragment slot="sidebarLeft">
-    {#if stats !== null}
+    {#if stats !== null && $reference !== null}
       <span class="hidden lg:inline">
         <Nav uuid={data.uuid} />
       </span>
@@ -86,11 +93,9 @@
     {/if}
   </svelte:fragment>
 
-  {#if stats !== null}
-    {#if $selectedTab === 'profile'}
-      <Profile {data} />
-    {:else}
-      <Achievements achievements={stats[gameNames[$selectedTab]]} />
-    {/if}
+  {#if $selectedTab === 'profile'}
+    <Profile achievementPoints={data.achievementPoints} />
+  {:else}
+    <Achievements />
   {/if}
 </AppShell>

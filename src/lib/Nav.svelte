@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ListBox, ListBoxItem, drawerStore } from '@skeletonlabs/skeleton';
-  import { reference, selectedTab } from '../ts/stores';
+  import { reference, selectedTab } from './stores';
 
   export let uuid: string;
 

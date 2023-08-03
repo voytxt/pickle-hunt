@@ -4,7 +4,7 @@
   import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
   import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
   import { Icon } from 'svelte-awesome';
-  import { filter, search, sort } from '../ts/stores';
+  import { filter, search, sort } from './stores';
 </script>
 
 <!-- Mobile -->

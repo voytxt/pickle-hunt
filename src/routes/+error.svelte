@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import Header from '$lib/Header.svelte';
   import { AppShell } from '@skeletonlabs/skeleton';
-  import Header from '../lib/Header.svelte';
 </script>
 
 <AppShell>

@@ -1,11 +1,10 @@
-type Reference = Record<
-  string,
-  {
-    gameId: stirng;
-    oneTime: Record<string, OneTimeAchievementReference>;
-    tiered: Record<string, TieredAchievementReference>;
-  }
->;
+type Reference = Record<string, GameReference>;
+
+type GameReference = {
+  gameId: string;
+  oneTime: Record<string, OneTimeAchievementReference>;
+  tiered: Record<string, TieredAchievementReference>;
+};
 
 type OneTimeAchievementReference = {
   name: string;
@@ -20,14 +19,15 @@ type TieredAchievementReference = {
   tiers: { requirement: number; reward: number }[];
 };
 
-type Stats = Record<
-  string,
-  {
-    gameId: string;
-    oneTime: Record<string, OneTimeAchievement>;
-    tiered: Record<string, TieredAchievement>;
-  }
->;
+type Stats = Record<string, Game>;
+
+type Game = {
+  gameId: string;
+  oneTime: Record<string, OneTimeAchievement>;
+  tiered: Record<string, TieredAchievement>;
+  completedReward: number;
+  totalReward: number;
+};
 
 type OneTimeAchievement = OneTimeAchievementReference & {
   completed: boolean;
