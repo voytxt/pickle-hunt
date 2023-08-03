@@ -46,3 +46,23 @@
     <LightSwitch />
   </svelte:fragment>
 </AppBar>
+
+<!--
+  the LightSwitch sun icon svg becomes blurry when hovering over the username form
+
+  this happens when hovering over an element A that has a hover transition to a filter
+  (the filter doesn't have to change anything, it can be like brightness(1))
+  now for the duration that A's transition lasts, the sun svg with a scale transform (.8 by default) will be blurry
+  reproduction: https://svelte.dev/repl/6302f0ce7a9a4289b3e1a73f9ce0d221?version=4.1.2
+
+  the code below scales the svg back to 100%, and then applies a bit of ugly margin to move it back to the correct place
+-->
+<style lang="postcss">
+  :global(.lightswitch-thumb) {
+    @apply ml-[6px] mt-[2px] !h-5 !scale-100;
+  }
+
+  :global(.dark .lightswitch-thumb) {
+    @apply ml-[2px];
+  }
+</style>
