@@ -1,16 +1,17 @@
 <script lang="ts">
   import { ListBox, ListBoxItem, drawerStore } from '@skeletonlabs/skeleton';
-  import { reference, selectedTab } from './stores';
+  import { selectedTab, stats } from './stores';
 
   export let uuid: string;
 
-  type Tab = 'hr' | { name: string; id: string; icon: string };
+  type Tab = 'hr' | { name: string; id: string; progress: number; icon: string };
 
-  function getTabs(): Tab[] {
-    const games = Object.entries($reference!).map(([name, { gameId }]) => {
+  function getTabs(stats: Stats): Tab[] {
+    const games = Object.entries(stats).map(([name, game]) => {
       return {
         name,
-        id: gameId,
+        id: game.gameId,
+        progress: Math.floor((game.completedReward / game.totalReward) * 100),
 
         // game icons from https://hypixel.net/styles/hypixel-v2/images/game-icons/GameName-64.png
         // seasonal icons from the hypixel achievement hunting community discord server
@@ -49,6 +50,7 @@
     tabs.unshift({
       name: 'Profile',
       id: 'profile',
+      progress: 100,
       icon: `https://mc-heads.net/avatar/${uuid}/44`,
     });
 
@@ -59,32 +61,49 @@
   }
 </script>
 
-<div class="box bg-surface-50-900-token h-[calc(100%-1rem)] p-2 pr-1 shadow-md rounded-token lg:h-[calc(100%-2rem)]">
-  <div class="mb-4 mr-6 text-center lg:hidden">
-    <a href="/" class="text-2xl font-bold">
-      🥒
-      <span class="logo">Pickle Hunt</span>
-    </a>
-  </div>
+{#if $stats !== null}
+  <div class="box bg-surface-50-900-token h-[calc(100%-1rem)] p-2 pr-1 shadow-md rounded-token lg:h-[calc(100%-2rem)]">
+    <div class="mb-4 mr-6 text-center lg:hidden">
+      <a href="/" class="text-2xl font-bold">
+        🥒
+        <span class="logo">Pickle Hunt</span>
+      </a>
+    </div>
 
-  <ListBox padding="p-1" class="m-2 h-[calc(100%-3.5rem)] select-none overflow-auto lg:h-[calc(100%-1rem)]">
-    {#each getTabs() as tab}
-      {#if tab === 'hr'}
-        <hr class="!my-2 mx-auto w-1/2" />
-      {:else}
-        <ListBoxItem
-          on:click={() => drawerStore.close()}
-          bind:group={$selectedTab}
-          value={tab.id}
-          class="mr-4"
-          name="tab"
-        >
-          <svelte:fragment slot="lead">
-            <img src={tab.icon} class="h-8 w-8 rounded-md" alt="" />
-          </svelte:fragment>
-          {tab.name}
-        </ListBoxItem>
-      {/if}
-    {/each}
-  </ListBox>
-</div>
+    <ListBox padding="p-2" class="m-2 h-[calc(100%-3.5rem)] select-none overflow-auto lg:h-[calc(100%-1rem)]">
+      {#each getTabs($stats) as tab}
+        {#if tab === 'hr'}
+          <hr class="!my-2 mx-auto w-1/2" />
+        {:else}
+          <ListBoxItem
+            on:click={() => drawerStore.close()}
+            bind:group={$selectedTab}
+            value={tab.id}
+            class="mr-4"
+            name="tab"
+          >
+            <svelte:fragment slot="lead">
+              <!-- https://stackoverflow.com/a/74099159 -->
+              <div
+                class="progress relative h-8 w-8 rounded-lg content-none after:absolute after:-inset-1 after:rounded-lg"
+                style="--progress: {tab.progress}%"
+              >
+                <img src={tab.icon} class="absolute z-10 rounded-md" alt="" />
+              </div>
+            </svelte:fragment>
+            {tab.name}
+          </ListBoxItem>
+        {/if}
+      {/each}
+    </ListBox>
+  </div>
+{/if}
+
+<style>
+  .progress::after {
+    background-image: conic-gradient(
+      rgb(var(--color-success-400)) var(--progress),
+      rgb(var(--color-surface-700)) var(--progress)
+    );
+  }
+</style>

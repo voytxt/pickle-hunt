@@ -80,11 +80,9 @@
   </svelte:fragment>
 
   <svelte:fragment slot="sidebarLeft">
-    {#if stats !== null && $reference !== null}
-      <span class="hidden lg:inline">
-        <Nav uuid={data.uuid} />
-      </span>
-    {/if}
+    <span class="hidden lg:inline">
+      <Nav uuid={data.uuid} />
+    </span>
   </svelte:fragment>
 
   <svelte:fragment slot="pageHeader">
