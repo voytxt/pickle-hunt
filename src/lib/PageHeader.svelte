@@ -44,10 +44,10 @@
   </div>
 
   <RadioGroup>
-    <RadioItem bind:group={$sort.direction} name="" value="ascending" class="flex h-full">
+    <RadioItem bind:group={$sort.direction} name="" value="descending" class="flex h-full">
       <Icon data={faArrowDown} class="my-auto" />
     </RadioItem>
-    <RadioItem bind:group={$sort.direction} name="" value="descending" class="flex h-full">
+    <RadioItem bind:group={$sort.direction} name="" value="ascending" class="flex h-full">
       <Icon data={faArrowUp} class="my-auto" />
     </RadioItem>
     <div class="bg-surface-400-500-token my-1 !ml-2 !mr-1 w-px" />

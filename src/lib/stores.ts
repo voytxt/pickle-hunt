@@ -6,4 +6,4 @@ export const stats = writable<Stats | null>(null);
 export const selectedTab = writable('profile');
 export const filter = writable<Filter>('all');
 export const search = writable<string>('');
-export const sort = writable<Sort>({ direction: 'ascending', criteria: 'name' });
+export const sort = writable<Sort>({ criteria: 'unlocked', direction: 'descending' });
