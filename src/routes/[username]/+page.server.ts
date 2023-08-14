@@ -8,11 +8,14 @@ export const load = (async ({ params }) => {
 
   console.log('>', params.username);
 
-  // the username that mojang returns is properly capitalized, so we grab it
-  // for example: xxandrewtatexx -> XXAndrewTateXX
-  const [uuid, username] = await getUuid(params.username);
+  let uuid = params.username;
 
-  console.log('Got uuid:', uuid);
+  // oops, that's not a uuid, that's a username
+  if (params.username.length < 17) {
+    uuid = await getUuid(params.username);
+
+    console.log('Got uuid:', uuid);
+  }
 
   const stats = await getStats(uuid);
 
@@ -20,12 +23,12 @@ export const load = (async ({ params }) => {
 
   console.log('< [200] took', new Date().getTime() - startTime, 'ms');
 
-  return { username, uuid, ...stats };
+  return { uuid, ...stats };
 }) satisfies PageServerLoad;
 
 // https://wiki.vg/Mojang_API#Username_to_UUID
-async function getUuid(username: string): Promise<[string, string]> {
-  const response: { id?: string; name?: string } = await wretch()
+async function getUuid(username: string): Promise<string> {
+  const response: { id?: string } = await wretch()
     .get(`https://api.mojang.com/users/profiles/minecraft/${username}`)
     .badRequest((err) => {
       console.error(`< [400] ${err.json.error}: ${err.json.errorMessage}`);
@@ -37,16 +40,17 @@ async function getUuid(username: string): Promise<[string, string]> {
     })
     .json();
 
-  if (response.id === undefined || response.name === undefined) {
+  if (response.id === undefined) {
     console.error(`< [500] ${JSON.stringify(response)}`);
     throw error(500, JSON.stringify(response));
   }
 
-  return [response.id, response.name];
+  return response.id;
 }
 
 // https://api.hypixel.net/#tag/Player-Data/paths/~1player/get
 async function getStats(uuid: string): Promise<{
+  username: string;
   achievementPoints: number;
   oneTime: string[];
   tiered: Record<string, number>;
@@ -54,6 +58,7 @@ async function getStats(uuid: string): Promise<{
   const response: {
     success?: true;
     player?: {
+      displayname: string;
       achievementPoints: number;
       achievementsOneTime: string[];
       achievements: Record<string, number>;
@@ -82,6 +87,10 @@ async function getStats(uuid: string): Promise<{
   }
 
   return {
+    // the username that hypixel returns is properly capitalized, so we grab it
+    // for example: xxandrewtatexx -> XXAndrewTateXX
+    username: response.player.displayname,
+
     achievementPoints: response.player.achievementPoints,
     oneTime: response.player.achievementsOneTime,
     tiered: response.player.achievements,
