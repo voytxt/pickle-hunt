@@ -16,11 +16,15 @@
     fetchReference();
   });
 
-  if ($reference !== null) {
-    $stats = getStats($reference);
+  // the $ is here, because when the username gets changed,
+  // and the page gets new data, we need to update the stats
+  $: {
+    if ($reference !== null) {
+      $stats = getStats($reference, data);
+    }
   }
 
-  function getStats(reference: Reference) {
+  function getStats(reference: Reference, data: PageData) {
     const stats: Stats = {};
 
     for (const [gameName, { gameId, oneTime, tiered }] of Object.entries(reference)) {
