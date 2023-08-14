@@ -16,6 +16,8 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+    'no-undef': 'off',
+    'svelte/no-at-html-tags': 'off',
   },
   env: {
     browser: true,

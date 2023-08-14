@@ -22,7 +22,7 @@
     game.oneTime = Object.fromEntries(
       Object.entries(game.oneTime).filter(([, ach]) => {
         return filterIncludes(ach.completed) && (searchIncludes(ach.name) || searchIncludes(ach.description));
-      })
+      }),
     );
 
     game.tiered = Object.fromEntries(
@@ -31,7 +31,7 @@
           filterIncludes(ach.completedReward === ach.reward) &&
           (searchIncludes(ach.name) || searchIncludes(ach.description))
         );
-      })
+      }),
     );
 
     return game;
@@ -47,7 +47,7 @@
           if (a.name < b.name) return -1 * multiplier;
 
           return 0;
-        })
+        }),
       );
 
       game.tiered = Object.fromEntries(
@@ -56,7 +56,7 @@
           if (a.name < b.name) return -1 * multiplier;
 
           return 0;
-        })
+        }),
       );
     } else if (sort.criteria === 'reward') {
       game.oneTime = Object.fromEntries(
@@ -65,7 +65,7 @@
           if (a.reward < b.reward) return -1 * multiplier;
 
           return 0;
-        })
+        }),
       );
 
       game.tiered = Object.fromEntries(
@@ -74,7 +74,7 @@
           if (a.reward < b.reward) return -1 * multiplier;
 
           return 0;
-        })
+        }),
       );
     } else if (sort.criteria === 'unlocked') {
       game.oneTime = Object.fromEntries(
@@ -88,7 +88,7 @@
           }
 
           return 0;
-        })
+        }),
       );
     }
 
@@ -131,8 +131,8 @@
                       .map((t) => formatNumber(t.requirement))
                       .join(', ')}">
                     [${formatNumber(ach.amount)} / ${formatNumber(
-                      ach.tiers[ach.completedTiers]?.requirement ?? ach.tiers[ach.tiers.length - 1].requirement
-                    )}]</span>`
+                      ach.tiers[ach.completedTiers]?.requirement ?? ach.tiers[ach.tiers.length - 1].requirement,
+                    )}]</span>`,
                   )}
                 </td>
                 <td class="table-cell-fit text-right">
