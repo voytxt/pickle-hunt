@@ -103,6 +103,9 @@
     if (percentage >= 10) return Math.round(percentage).toString();
     if (percentage >= 1) return (Math.round(percentage * 10) / 10).toString();
 
+    // the lowest it can go is exactly 0.01
+    if (percentage === 0.01) return '< ' + percentage.toString();
+
     return percentage.toPrecision(1);
   }
 </script>
