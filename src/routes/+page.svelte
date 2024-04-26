@@ -2,9 +2,11 @@
   import Header from '$lib/Header.svelte';
   import { fetchReference } from '$lib/api';
   import { faFontAwesome } from '@fortawesome/free-solid-svg-icons/faFontAwesome';
-  import { AppShell, Modal, modalStore } from '@skeletonlabs/skeleton';
+  import { AppShell, Modal, getModalStore } from '@skeletonlabs/skeleton';
   import { onMount } from 'svelte';
   import { Icon } from 'svelte-awesome';
+
+  const modalStore = getModalStore();
 
   onMount(() => {
     fetchReference();

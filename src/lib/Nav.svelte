@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { ListBox, ListBoxItem, drawerStore } from '@skeletonlabs/skeleton';
+  import { ListBox, ListBoxItem, getDrawerStore } from '@skeletonlabs/skeleton';
   import { selectedTab, stats } from './stores';
 
   export let uuid: string;
+
+  const drawerStore = getDrawerStore();
 
   type Tab = 'hr' | { name: string; id: string; progress: number; icon: string };
 

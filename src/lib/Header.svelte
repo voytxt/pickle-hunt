@@ -1,9 +1,11 @@
 <script lang="ts">
   import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
-  import { AppBar, LightSwitch, drawerStore } from '@skeletonlabs/skeleton';
+  import { AppBar, LightSwitch, getDrawerStore } from '@skeletonlabs/skeleton';
   import { Icon } from 'svelte-awesome';
 
   export let username = '';
+
+  const drawerStore = getDrawerStore();
 
   // (1) the name attribute on the input is there, because it allows for autocompletion
   // but that has a side effect: the form on submit redirects to /steve?player=steve instead of just /steve
