@@ -74,8 +74,8 @@ async function getStats(uuid: string): Promise<{
       throw error(403, err.json.cause);
     })
     .error(429, (err) => {
-      console.error(`< [403] ${err.json.cause}`);
-      throw error(403, err.json.cause);
+      console.error(`< [429] ${err.json.cause}`);
+      throw error(429, err.json.cause);
     })
     .json();
 
