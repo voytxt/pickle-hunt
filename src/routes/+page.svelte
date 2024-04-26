@@ -26,7 +26,7 @@
 
       <h2 class="h2 text-center text-2xl">
         Hypixel Achievement Tracker by
-        <a href="https://github.com/vojta-dev" target="_blank" class="underline underline-offset-2">Vojta</a>
+        <a href="https://github.com/voytxt" target="_blank" class="underline underline-offset-2">voytxt</a>
       </h2>
 
       <hr class="mx-2 mb-6 mt-8" />

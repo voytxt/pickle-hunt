@@ -5,7 +5,7 @@ import { reference as referenceStore } from './stores';
 // but that (1) doesn't include seasonal names,
 // and (2) blitz, cops and crims, and warlords have a different name for some reason
 // so it's probably better to hardcode it for now
-// original code: https://github.com/vojta-dev/pickle-hunt/blob/117f1a3949b66629ff94aa8d5cab413fab0a311d/src/main.ts#L14-L31
+// original code: https://github.com/voytxt/pickle-hunt/blob/117f1a3949b66629ff94aa8d5cab413fab0a311d/src/main.ts#L14-L31
 export const gameNames: Record<string, string> = {
   arcade: 'Arcade',
   arena: 'Arena Brawl',
