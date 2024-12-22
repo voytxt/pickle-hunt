@@ -15,7 +15,7 @@
     <option value="uncompleted">Uncompleted</option>
   </select>
 
-  <div class="flex-1" />
+  <div class="flex-1"></div>
 
   <select class="select w-max" bind:value={$sort.direction}>
     <option value="ascending" class="flex h-full">&uarr;</option>
@@ -23,7 +23,8 @@
   </select>
 
   <select class="select w-max self-end" bind:value={$sort.criteria}>
-    <div class="bg-surface-400-500-token my-1 !ml-2 !mr-1 w-px" />
+    <!-- idk what this was for -->
+    <!-- <div class="bg-surface-400-500-token my-1 !ml-2 !mr-1 w-px" /> -->
     <option value="name">Name</option>
     <option value="reward">Reward</option>
     <option value="unlocked">Unlocked</option>
@@ -50,7 +51,7 @@
     <RadioItem bind:group={$sort.direction} name="" value="ascending" class="flex h-full">
       <Icon data={faArrowUp} class="my-auto" />
     </RadioItem>
-    <div class="bg-surface-400-500-token my-1 !ml-2 !mr-1 w-px" />
+    <div class="bg-surface-400-500-token my-1 !ml-2 !mr-1 w-px"></div>
     <RadioItem bind:group={$sort.criteria} name="" value="name">Name</RadioItem>
     <RadioItem bind:group={$sort.criteria} name="" value="reward">Reward</RadioItem>
     <RadioItem bind:group={$sort.criteria} name="" value="unlocked">Unlocked</RadioItem>

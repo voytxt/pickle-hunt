@@ -2,15 +2,15 @@
   import { gameNames } from './api';
   import { filter, search, selectedTab, sort, stats } from './stores';
 
-  let game: Game | null = null;
+  let game: Game | null = $state(null);
 
-  $: {
+  $effect(() => {
     if ($stats !== null && $selectedTab !== 'profile') {
-      game = structuredClone($stats[gameNames[$selectedTab]]);
-      game = searchAndFilterAchs(game, $search, $filter);
-      game = sortAchs(game, $sort);
+      let newGame = structuredClone($state.snapshot($stats[gameNames[$selectedTab]]));
+      newGame = searchAndFilterAchs(newGame, $search, $filter);
+      game = sortAchs(newGame, $sort);
     }
-  }
+  });
 
   function searchAndFilterAchs(game: Game, search: string, filter: Filter): Game {
     let searchString = search.toLowerCase();
@@ -183,6 +183,6 @@
   }
 
   tr.completed {
-    @apply bg-success-300 text-success-900 dark:bg-success-600/70 dark:text-white;
+    @apply !bg-success-300 text-success-900 dark:!bg-success-600/70 dark:text-white;
   }
 </style>

@@ -16,9 +16,9 @@
 <Modal />
 
 <AppShell>
-  <svelte:fragment slot="header">
+  {#snippet header()}
     <Header />
-  </svelte:fragment>
+  {/snippet}
 
   <div class="flex h-full items-center justify-center gap-4">
     <div class="box p-10 !shadow-2xl">
@@ -46,7 +46,7 @@
 
         <button
           class="logo-item hover:brightness-110"
-          on:click={() => {
+          onclick={() => {
             modalStore.trigger({
               type: 'alert',
               title: 'Momen & Litphoenix',

@@ -2,7 +2,7 @@
   import { ListBox, ListBoxItem, getDrawerStore } from '@skeletonlabs/skeleton';
   import { selectedTab, stats } from './stores';
 
-  export let uuid: string;
+  const { uuid }: { uuid: string } = $props();
 
   const drawerStore = getDrawerStore();
 
@@ -84,7 +84,7 @@
             class="mr-4"
             name="tab"
           >
-            <svelte:fragment slot="lead">
+            {#snippet lead()}
               <!-- https://stackoverflow.com/a/74099159 -->
               <div
                 class="progress relative h-8 w-8 rounded-lg content-none after:absolute after:-inset-1 after:rounded-lg"
@@ -92,7 +92,7 @@
               >
                 <img src={tab.icon} class="absolute z-10 rounded-md" alt="" />
               </div>
-            </svelte:fragment>
+            {/snippet}
             {tab.name}
           </ListBoxItem>
         {/if}

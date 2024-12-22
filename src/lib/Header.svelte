@@ -3,7 +3,7 @@
   import { AppBar, LightSwitch, getDrawerStore } from '@skeletonlabs/skeleton';
   import { Icon } from 'svelte-awesome';
 
-  export let username = '';
+  let { username = $bindable('') }: { username?: string } = $props();
 
   const drawerStore = getDrawerStore();
 
@@ -12,7 +12,7 @@
   // the best solution I could find is to remove the name attribute right before the submit event
   // more info: https://stackoverflow.com/q/3008035
   // (2) the name is 'ign', because SkyCrypt also uses 'ign', that allows for cross-page browser suggestions
-  let inputName = 'ign';
+  let inputName = $state('ign');
 </script>
 
 <AppBar
@@ -22,8 +22,8 @@
   padding="p-2 lg:p-4"
   class="box mr-2 lg:mr-4"
 >
-  <svelte:fragment slot="lead">
-    <button class="btn btn-sm mr-4 lg:hidden" on:click={() => drawerStore.open()}>
+  {#snippet lead()}
+    <button class="btn btn-sm mr-4 lg:hidden" onclick={() => drawerStore.open()}>
       <Icon data={faBars} scale={1.25} />
     </button>
 
@@ -31,22 +31,22 @@
       🥒
       <span class="logo">Pickle Hunt</span>
     </a>
-  </svelte:fragment>
+  {/snippet}
 
   <form
     method="GET"
     action="/{username}"
     class="input-group input-group-divider grid-cols-[1fr_auto]"
-    on:submit={() => (inputName = '')}
+    onsubmit={() => (inputName = '')}
   >
     <input type="text" name={inputName} bind:value={username} placeholder="Minecraft username" />
 
     <input type="submit" value="Submit" class="cursor-pointer px-4" />
   </form>
 
-  <svelte:fragment slot="trail">
+  {#snippet trail()}
     <LightSwitch />
-  </svelte:fragment>
+  {/snippet}
 </AppBar>
 
 <!--
@@ -55,7 +55,7 @@
   this happens when hovering over an element A that has a hover transition to a filter
   (the filter doesn't have to change anything, it can be like brightness(1))
   now for the duration that A's transition lasts, the sun svg with a scale transform (.8 by default) will be blurry
-  reproduction: https://svelte.dev/repl/6302f0ce7a9a4289b3e1a73f9ce0d221?version=4.1.2
+  reproduction: https://svelte.dev/playground/6302f0ce7a9a4289b3e1a73f9ce0d221?version=5.15.0
 
   the code below scales the svg back to 100%, and then applies a bit of ugly margin to move it back to the correct place
 -->

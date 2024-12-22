@@ -10,19 +10,19 @@
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
-  export let data: PageData;
+  const { data }: { data: PageData } = $props();
 
   onMount(() => {
     fetchReference();
   });
 
-  // the $ is here, because when the username gets changed,
+  // the $effect is here, because when the username gets changed,
   // and the page gets new data, we need to update the stats
-  $: {
+  $effect(() => {
     if ($reference !== null) {
       $stats = getStats($reference, data);
     }
-  }
+  });
 
   function getStats(reference: Reference, data: PageData) {
     const stats: Stats = {};
@@ -79,21 +79,21 @@
 </Drawer>
 
 <AppShell>
-  <svelte:fragment slot="header">
+  {#snippet header()}
     <Header username={data.username} />
-  </svelte:fragment>
+  {/snippet}
 
-  <svelte:fragment slot="sidebarLeft">
+  {#snippet sidebarLeft()}
     <span class="hidden lg:inline">
       <Nav uuid={data.uuid} />
     </span>
-  </svelte:fragment>
+  {/snippet}
 
-  <svelte:fragment slot="pageHeader">
+  {#snippet pageHeader()}
     {#if $selectedTab !== 'profile'}
       <PageHeader />
     {/if}
-  </svelte:fragment>
+  {/snippet}
 
   {#if $selectedTab === 'profile'}
     <Profile achievementPoints={data.achievementPoints} />

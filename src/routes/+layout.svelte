@@ -6,9 +6,11 @@
   import { dev } from '$app/environment';
   import { inject } from '@vercel/analytics';
 
+  const { children } = $props();
+
   inject({ mode: dev ? 'development' : 'production' });
 
   initializeStores();
 </script>
 
-<slot />
+{@render children?.()}
