@@ -129,7 +129,7 @@
                 <td>{ach.name}</td>
                 <td>
                   {@html ach.description.replace(
-                    '%s',
+                    '%%value%%',
                     `<span class="hover:cursor-help hover:underline" title="${ach.tiers
                       .map((t) => formatNumber(t.requirement))
                       .join(', ')}">
